@@ -29,7 +29,7 @@ var self = module.exports = {
   			}
   		});
   },
-  newUser: function (name, password, email, callback) {
+  /*newUser: function (name, password, email, callback) {
     var succes = false;
   	self.isExist(name, email, function(exist){
       if(exist){
@@ -40,21 +40,45 @@ var self = module.exports = {
         console.log("nincs");
         var session = driver.session();
         session
-        .run("Create (p:Person{name:{username},password:{password},email:{emailpar}}) return p.name as name",{username: name, password: pass, emailpar: email})
-        .subscribe({
-          onNext: function(record){
-            succes = true;
-          },
-          onCompleted: function(){
-            session.close();
-            callback(succes);
-          },
-          onError: function(error){
-            console.log(error);
-            callback(false);
-          }
+          .run("Create (p:Person{name:{username},password:{password},email:{emailpar}}) return p.name as name",{username: name, password: pass, emailpar: email})
+          .subscribe({
+            onNext: function(record){
+              succes = true;
+            },
+            onCompleted: function(){
+              session.close();
+              callback(succes);
+            },
+            onError: function(error){
+              console.log(error);
+              callback(false);
+            }
         });
       }
+    });
+  },*/
+  newUser: function (name, password, email, callback) {
+    var succes = false;
+    self.isExist(name, email, function(exist){
+      if(exist){
+        callback(succes);
+        console.log("van");
+      }
+      else{
+        console.log("nincs");
+        var session = driver.session();
+        session
+          .run("Create (p:Person{name:{username},password:{password},email:{emailpar}}) return p.name as name",{username: name, password: pass, emailpar: email})
+          .then(function(record{
+              session.close();
+              callback(true);
+          }))
+          .catch(function(error){
+              console.log(error);
+              callback(false);
+          });
+        }
+      });
     });
   },
   isExist: function (name, email, callback){
