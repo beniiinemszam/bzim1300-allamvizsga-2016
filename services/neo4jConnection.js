@@ -69,10 +69,10 @@ var self = module.exports = {
         var session = driver.session();
         session
           .run("Create (p:Person{name:{username},password:{password},email:{emailpar}}) return p.name as name",{username: name, password: pass, emailpar: email})
-          .then(function(record{
+          .then(function(record){
               session.close();
               callback(true);
-          }))
+          })
           .catch(function(error){
               console.log(error);
               callback(false);
