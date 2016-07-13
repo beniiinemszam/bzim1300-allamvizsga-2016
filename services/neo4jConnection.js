@@ -77,8 +77,7 @@ var self = module.exports = {
               console.log(error);
               callback(false);
           });
-        }
-      });
+      }
     });
   },
   isExist: function (name, email, callback){
