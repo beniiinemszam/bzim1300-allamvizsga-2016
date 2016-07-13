@@ -1,5 +1,7 @@
 var neo4j = require('neo4j-driver').v1;
 
+// var driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "neo4jpassword"));
+
 var graphenedbURL = process.env.GRAPHENEDB_BOLT_URL;
 var graphenedbUser = process.env.GRAPHENEDB_BOLT_USER;
 var graphenedbPass = process.env.GRAPHENEDB_BOLT_PASSWORD;
@@ -22,7 +24,8 @@ var self = module.exports = {
   				callback(exist);
   			},
   			onError: function(error){
-  				console.log('error');
+  				console.log(error);
+          callback(false);
   			}
   		});
   },
@@ -47,7 +50,7 @@ var self = module.exports = {
             callback(succes);
           },
           onError: function(error){
-            console.log('error');
+            console.log(error);
             callback(false);
           }
         });
@@ -69,7 +72,7 @@ var self = module.exports = {
   				callback(exist);
   			},
   			onError: function(error){
-  				console.log('error');
+  				console.log(error);
           callback(false);
   			}
   		});
