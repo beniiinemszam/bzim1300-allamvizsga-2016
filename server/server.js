@@ -110,4 +110,12 @@ var server = app.listen(process.env.PORT || 8081,function(){
 	var host = server.address().address;
 	var port = server.address().port;
 	console.log("Server listening at http://%s:%s",host,port);
+}).on('error', function(error){
+    console.log('on error handler');
+    console.log(error.stack);
+});
+
+process.on('uncaughtException', function(err) {
+    console.log('process.on handler');
+    console.log(err);
 });
