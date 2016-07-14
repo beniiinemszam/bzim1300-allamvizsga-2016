@@ -7,10 +7,10 @@ var graphenedbUser  = process.env.GRAPHENEDB_BOLT_USER;
 var graphenedbPass  = process.env.GRAPHENEDB_BOLT_PASSWORD;
 
 var driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser, graphenedbPass));
-var session = driver.session();
 
 var self = module.exports = {
   authenticateUser: function (name, pass , callback) {
+    var session = driver.session();
   	var exist = false;
     console.log(name+" "+pass);
   	session
@@ -25,6 +25,7 @@ var self = module.exports = {
   			},
   			onError: function(error){
   				console.log(error);
+          session.close();
           callback(false);
   			}
   		});
@@ -58,6 +59,7 @@ var self = module.exports = {
     });
   },*/
   newUser: function (name, password, email, callback) {
+    var session = driver.session();
     var succes = false;
     self.isExist(name, email, function(exist){
       if(exist){
@@ -74,12 +76,14 @@ var self = module.exports = {
           })
           .catch(function(error){
               console.log(error);
+              session.close();
               callback(false);
           });
       }
     });
   },
   isExist: function (name, email, callback){
+    var session = driver.session();
   	var exist = false;
   	session
   		.run("match (p:Person) where p.name={username} or p.email={emailpar} return p.name, p.email",{username: name, emailpar: email})
@@ -94,6 +98,7 @@ var self = module.exports = {
   			},
   			onError: function(error){
   				console.log(error);
+          session.close();
           callback(false);
   			}
   		});
