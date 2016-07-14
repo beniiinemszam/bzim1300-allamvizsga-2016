@@ -86,7 +86,7 @@ var self = module.exports = {
     var session = driver.session();
   	var exist = false;
   	session
-  		.run("match (p:Person) where p.name={username} or p.email={emailpar} return p.name, p.email",{username: name, emailpar: email})
+  		.run("Match (p:Person) where p.name={username} or p.email={emailpar} return p.name, p.email",{username: name, emailpar: email})
   		.subscribe({
   			onNext: function(record){
   				exist = true;
