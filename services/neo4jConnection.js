@@ -103,4 +103,12 @@ var self = module.exports = {
   			}
   		});
   }
-};
+}.on('error', function(err){
+    console.log('on error handler');
+    console.log(err.stack);
+});
+
+process.on('uncaughtException', function(err) {
+    console.log('process.on handler');
+    console.log(err);
+});
