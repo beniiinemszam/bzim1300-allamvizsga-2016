@@ -24,7 +24,7 @@ var self = module.exports = {
   				callback(exist);
   			},
   			onError: function(error){
-  				console.log(error);
+  				console.log(error.stack);
           session.close();
           callback(false);
   			}
