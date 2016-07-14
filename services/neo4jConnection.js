@@ -2,15 +2,15 @@ var neo4j = require('neo4j-driver').v1;
 
 // var driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "neo4jpassword"));
 
-var graphenedbURL = process.env.GRAPHENEDB_BOLT_URL;
-var graphenedbUser = process.env.GRAPHENEDB_BOLT_USER;
-var graphenedbPass = process.env.GRAPHENEDB_BOLT_PASSWORD;
+var graphenedbURL   = process.env.GRAPHENEDB_BOLT_URL;
+var graphenedbUser  = process.env.GRAPHENEDB_BOLT_USER;
+var graphenedbPass  = process.env.GRAPHENEDB_BOLT_PASSWORD;
 
 var driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser, graphenedbPass));
+var session = driver.session();
 
 var self = module.exports = {
   authenticateUser: function (name, pass , callback) {
-  	var session = driver.session();
   	var exist = false;
     console.log(name+" "+pass);
   	session
@@ -66,7 +66,6 @@ var self = module.exports = {
       }
       else{
         console.log("nincs");
-        var session = driver.session();
         session
           .run("Create (p:Person{name:{username},password:{password},email:{emailpar}}) return p.name as name",{username: name, password: pass, emailpar: email})
           .then(function(record){
@@ -81,7 +80,6 @@ var self = module.exports = {
     });
   },
   isExist: function (name, email, callback){
-  	var session = driver.session();
   	var exist = false;
   	session
   		.run("match (p:Person) where p.name={username} or p.email={emailpar} return p.name, p.email",{username: name, emailpar: email})
