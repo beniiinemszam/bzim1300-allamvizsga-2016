@@ -1,0 +1,5 @@
+@html.extend('errorLayout', function(model){
+    @html.block('body', function(model){
+        <p>@model.message</p>
+    });
+});

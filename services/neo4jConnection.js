@@ -5,14 +5,12 @@ var neo4j = require('neo4j-driver').v1;
 var graphenedbURL   = process.env.GRAPHENEDB_BOLT_URL;
 var graphenedbUser  = process.env.GRAPHENEDB_BOLT_USER;
 var graphenedbPass  = process.env.GRAPHENEDB_BOLT_PASSWORD;
-
 var driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser, graphenedbPass));
 
 var self = module.exports = {
   authenticateUser: function (name, pass , callback) {
     var session = driver.session();
   	var exist = false;
-    console.log(name+" "+pass);
   	session
   		.run("Match (p:Person{name:{username},password:{password}}) return p.name as name",{username: name, password: pass})
   		.subscribe({
@@ -30,34 +28,6 @@ var self = module.exports = {
   			}
   		});
   },
-  /*newUser: function (name, password, email, callback) {
-    var succes = false;
-  	self.isExist(name, email, function(exist){
-      if(exist){
-        callback(succes);
-        console.log("van");
-      }
-      else{
-        console.log("nincs");
-        var session = driver.session();
-        session
-          .run("Create (p:Person{name:{username},password:{password},email:{emailpar}}) return p.name as name",{username: name, password: pass, emailpar: email})
-          .subscribe({
-            onNext: function(record){
-              succes = true;
-            },
-            onCompleted: function(){
-              session.close();
-              callback(succes);
-            },
-            onError: function(error){
-              console.log(error);
-              callback(false);
-            }
-        });
-      }
-    });
-  },*/
   newUser: function (name, password, email, callback) {
     var session = driver.session();
     var succes = false;
@@ -93,7 +63,6 @@ var self = module.exports = {
   			},
   			onCompleted: function(){
   				session.close();
-          console.log(exist);
   				callback(exist);
   			},
   			onError: function(error){

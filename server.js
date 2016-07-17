@@ -1,13 +1,17 @@
 var express 	= require('express');
-var app 		= express();
 var path    	= require("path");
 var url 		= require("url");
 var bodyParser 	= require('body-parser');
-var neo4j		= require(path.join(__dirname + "/../services/neo4jConnection"));
-var encoding	= require(path.join(__dirname + "/../services/encoding"));
 var session 	= require('express-session');
+var vash 		= require('vash');
+var neo4j		= require(path.join(__dirname + "/services/neo4jConnection"));
+var encoding	= require(path.join(__dirname + "/services/encoding"));
 
-app.use(express.static(__dirname + "/../public"));
+var app 		= express();
+app.set('view engine', 'vash');
+
+
+app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
@@ -21,31 +25,41 @@ function checkAuth(req,res,next){
 	var username = sess.username;
 	var pathname = url.parse(req.url).pathname;
 	if(!sess.secretkey){
-		res.status(404).send("you don't have permission to view this page");
+		// res.status(404).send("you don't have permission to view this page");
+		res.render('error',
+		{
+			message: "You don't have permission to view this page",
+			code: '403'
+		});
+		return;
 	}
-
-	console.log(pathname);
 
 	encoding.encode(username,pathname,function(cb){
 		if(sess.secretkey != cb){
-			res.status(404).send("you don't have permission to view this page");
+			// res.status(404).send("you don't have permission to view this page");
+			res.render('error',
+			{
+				message: "You don't have permission to view this page!",
+				code: '403'
+			});
+			return;
 		}
 	});
 
-	console.log("checked");
 	next();
 }
 
 app.get("/",function(req,res){
-	res.sendFile(path.join(__dirname+"/../views/index.html"));
+	// res.render('index', {title: 'letsdoit'});
+	res.sendFile(path.join(__dirname+"/views/index.html"));
 });
 
 app.get("/login",function(req,res){
-	res.sendFile(path.join(__dirname+"/../views/login.html"));
+	res.sendFile(path.join(__dirname+"/views/login.html"));
 });
 
 app.get("/signup",function(req,res){
-	res.sendFile(path.join(__dirname+"/../views/signup.html"));
+	res.sendFile(path.join(__dirname+"/views/signup.html"));
 });
 
 app.post("/trysignup",function(req,res){
@@ -95,7 +109,6 @@ app.post("/authenticate",function(req,res){
 });
 
 app.get("/test",checkAuth,function(req,res){
-	console.log("ok");
 	res.writeHead(301,
 			  {Location: '/'}
 			);
@@ -103,7 +116,12 @@ app.get("/test",checkAuth,function(req,res){
 })
 
 app.use(function(req, res){
-	res.status(404).send('Not Found');
+	//res.status(404).send('Not Found');
+	res.render('error',
+	{
+		message: 'Not Found',
+		code: '404'
+	});
 });
 
 var server = app.listen(process.env.PORT || 8081,function(){
