@@ -1,5 +1,7 @@
 @html.extend('errorLayout', function(model){
-    @html.block('body', function(model){
-        <p>@model.message</p>
+    @html.block('errorMessage', function(model){
+        <h3>Error code: @model.code</h3>
+		<h1>@model.message</h1>
+		<hr>
     });
 });

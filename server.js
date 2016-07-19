@@ -8,8 +8,9 @@ var neo4j		= require(path.join(__dirname + "/services/neo4jConnection"));
 var encoding	= require(path.join(__dirname + "/services/encoding"));
 
 var app 		= express();
-app.set('view engine', 'vash');
 
+
+app.set('view engine', 'vash');
 
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
@@ -25,10 +26,9 @@ function checkAuth(req,res,next){
 	var username = sess.username;
 	var pathname = url.parse(req.url).pathname;
 	if(!sess.secretkey){
-		// res.status(404).send("you don't have permission to view this page");
 		res.render('error',
 		{
-			message: "You don't have permission to view this page",
+			message: "You don't have permission to view this page!",
 			code: '403'
 		});
 		return;
@@ -36,7 +36,6 @@ function checkAuth(req,res,next){
 
 	encoding.encode(username,pathname,function(cb){
 		if(sess.secretkey != cb){
-			// res.status(404).send("you don't have permission to view this page");
 			res.render('error',
 			{
 				message: "You don't have permission to view this page!",
@@ -50,16 +49,15 @@ function checkAuth(req,res,next){
 }
 
 app.get("/",function(req,res){
-	// res.render('index', {title: 'letsdoit'});
 	res.sendFile(path.join(__dirname+"/views/index.html"));
 });
 
 app.get("/login",function(req,res){
-	res.sendFile(path.join(__dirname+"/views/login.html"));
+	res.render('login');
 });
 
 app.get("/signup",function(req,res){
-	res.sendFile(path.join(__dirname+"/views/signup.html"));
+	res.render('signup');
 });
 
 app.post("/trysignup",function(req,res){
@@ -80,7 +78,11 @@ app.post("/trysignup",function(req,res){
 			res.end();
 		}
 		else{
-			res.status(400).send('Username or Email is exist!');
+			res.render('signup',
+			{
+				message: 'Username or Email is exist!',
+				code: '403'
+			});
 		}
 	})
 });
@@ -102,8 +104,11 @@ app.post("/authenticate",function(req,res){
 			res.end();
 		}
 		else{
-			console.log("Error: wrong username or password!");
-			res.status(404).send('Wrong username or password!');
+			res.render('login',
+			{
+				message: 'Wrong username or password!',
+				code: '403'
+			});
 		}
 	})
 });
@@ -116,10 +121,9 @@ app.get("/test",checkAuth,function(req,res){
 })
 
 app.use(function(req, res){
-	//res.status(404).send('Not Found');
 	res.render('error',
 	{
-		message: 'Not Found',
+		message: 'Not Found!',
 		code: '404'
 	});
 });

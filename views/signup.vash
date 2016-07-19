@@ -1,0 +1,12 @@
+@html.extend('signupLayout', function(model){
+    @html.block('errorMessage', function(model){
+    	@if(model.message){
+			<div class="row">
+				<div class="col-md-12 col-sm-12 alert alert-danger fade in">
+					<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+					<h3 id='form-error-msg'>@model.message</h3>		
+				</div>
+			</div>
+		}
+    });
+});

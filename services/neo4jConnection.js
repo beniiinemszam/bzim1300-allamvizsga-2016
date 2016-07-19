@@ -34,10 +34,8 @@ var self = module.exports = {
     self.isExist(name, email, function(exist){
       if(exist){
         callback(succes);
-        console.log("van");
       }
       else{
-        console.log("nincs");
         session
           .run("Create (p:Person{name:{username},password:{password},email:{emailpar}}) return p.name as name",{username: name, password: pass, emailpar: email})
           .then(function(record){

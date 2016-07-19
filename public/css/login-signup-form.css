@@ -1,0 +1,30 @@
+label{
+	margin-top: 5px;
+	float: left;
+}
+
+input{
+	float: right;
+}
+
+button {
+	margin-top: 10px;
+	background-color: transparent;
+    border: 1px solid #00c6d7;
+    border-radius: 6px;
+    box-shadow: 0 1px 0 0 #a3a3a3 inset;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Arial;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 6px 24px;
+    text-decoration: none;
+}
+
+#form-error-msg{
+	border-color: red;
+	background-color: red;
+	color: white;
+}
