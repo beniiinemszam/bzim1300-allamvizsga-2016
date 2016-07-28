@@ -300,11 +300,10 @@ app.post("/quiz/:type", checkAuth, function(req,res){
 app.get("/admin", checkAuthAdmin, function(req,res){
 	var sess 		= req.session;
 	var username 	= sess.username;
-	neo4j.isAdmin(username,function(exist){		
-		res.render('admin',
-		{
-			admin: exist
-		});
+	var isAdmin		= sess.isAdmin || false;		
+	res.render('admin',
+	{
+		admin: isAdmin
 	});
 });
 
@@ -322,12 +321,20 @@ app.post("/authenticateAdmin",function(req,res){
 			res.writeHead(301,
 			  {Location: '/admin'}
 			);
+
+			var sess = req.session;
+
 			encoding.encode(username+"admin", "/authenticateAdmin", function(cb){
-				var sess 			= req.session;
 				sess.secretadminkey = cb;
 				sess.username 		= username;
 			});
-			res.end();
+
+			neo4j.isAdmin(username,function(exist){
+				if(exist){
+					sess.isAdmin = true;
+				}
+				res.end();
+			});
 		}
 		else{
 			renderError(res, 'adminLogin', 'Wrong username or password!', 403);
@@ -336,11 +343,20 @@ app.post("/authenticateAdmin",function(req,res){
 });
 
 app.get("/addeditor", checkAuthAdmin, function(req, res){
-	res.render('newEditor');
+	var sess 	= req.session;
+	var isAdmin	= sess.isAdmin || false;
+	if(isAdmin){		
+		res.render('newEditor');
+	}
+	else{
+		renderError(res, 'error', "You don't have permission to view this page!", 403);
+	}
 });
 
 app.post("/tryneweditor", checkAuthAdmin, function(req, res){
-	var email = req.body.email;
+	var email 	= req.body.email;
+	var sess 	= req.session;
+	var isAdmin	= sess.isAdmin || false;
 
 	if(email == null){
 		renderError(res, 'error', 'All parameter is required!', 403);
@@ -351,7 +367,7 @@ app.post("/tryneweditor", checkAuthAdmin, function(req, res){
 		if(success){
 			res.render('admin',
 			{
-				admin: true
+				admin: isAdmin
 			});
 		}
 		else{
@@ -368,6 +384,8 @@ app.post("/trynewtype", checkAuthAdmin, function(req, res){
 	var typename 	= req.body.typename;
 	var qnumber 	= req.body.number;
 	var type 		= new QuestionType(typename, qnumber);
+	var sess 		= req.session;
+	var isAdmin		= sess.isAdmin || false;
 
 	if(typename == null || qnumber==null || type== null){
 		renderError(res, 'error', 'All parameter is required!', 403);
@@ -376,7 +394,10 @@ app.post("/trynewtype", checkAuthAdmin, function(req, res){
 
 	neo4j.newType(type, function(success){
 		if(success){
-			res.render('admin');
+			res.render('admin',
+			{
+				admin: isAdmin
+			});
 		}
 		else{
 			renderError(res, 'error', 'Internal Server Error!', 500);
@@ -400,6 +421,7 @@ app.get("/newquestion", checkAuthAdmin, function(req, res){
 
 app.post("/trynewquestion", checkAuthAdmin, function(req, res){
 	var sess 		= req.session;
+	var isAdmin		= sess.isAdmin || false;
 
 	var d 	= new Date();
     var h 	= addZero(d.getHours(), 2);
@@ -425,7 +447,10 @@ app.post("/trynewquestion", checkAuthAdmin, function(req, res){
 	
 	neo4j.newQuestion(newquestion, function(success){
 		if(success){
-			res.render('admin');
+			res.render('admin',
+			{
+				admin: isAdmin
+			});
 		}
 		else{
 			renderError(res, 'error', 'Internal Server Error!', 500);
