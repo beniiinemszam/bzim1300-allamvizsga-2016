@@ -60,7 +60,15 @@
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
                     <div class="intro-text">
-                        @html.block('errorMessage')
+                        <h2>List</h2>
+						<hr>
+						@html.block('list')
+						<form action='/newtype' method='get'>
+				        	<input type='submit' value="New type" class="btn btn-default custom-type-buttons">
+				        </form><br>
+				        <form action='/newquestion' method='get'>
+				        	<input type='submit' value="New Question" class="btn btn-default custom-type-buttons">
+				        </form><br>
                     </div>
                 </div>
             </div>

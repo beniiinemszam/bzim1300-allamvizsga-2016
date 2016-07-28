@@ -1,6 +1,7 @@
 guard 'livereload' do 
-  watch(%r{views/.+\.(css|js|js|html|vash)})
-  watch(%r{public/*.+\.(css|js|js|html)})
-  watch(%r{.+\.(css|js|js|html)}) 
-  watch(%r{services/.+\.(css|js|js|html)}) 
+  watch(%r{views/.+\.(html|vash)})
+  watch(%r{public/*.+\.(css|js)})
+  watch(%r{.+\.(js)}) 
+  watch(%r{services/.+\.(js)})
+  watch(%r{models/.+\.(js)})  
 end

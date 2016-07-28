@@ -1,0 +1,9 @@
+@html.extend('newQuestionLayout', function(model){
+    @html.block('types', function(model){
+    	<select name='type'>
+    	@model.data.forEach(function(item){
+    		<option value='@item'>@item</option>
+    	})
+    	</select><br>
+    });
+})

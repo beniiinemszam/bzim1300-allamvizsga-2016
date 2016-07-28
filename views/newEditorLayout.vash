@@ -60,7 +60,13 @@
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
                     <div class="intro-text">
-                        @html.block('errorMessage')
+                        <h2>New Editor</h2>
+                        <hr>
+                        @html.block('error')
+                        <form action='/tryneweditor' method='post'>
+                            <input type="password" name="password" required placeholder="&#xf0e0; E-mail"><br><br>
+                            <input type='submit' value="Add to editors" class="btn btn-default custom-login-buttons">
+                        </form>
                     </div>
                 </div>
             </div>

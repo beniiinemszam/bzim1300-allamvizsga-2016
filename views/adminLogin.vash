@@ -1,4 +1,4 @@
-@html.extend('loginLayout', function(model){
+@html.extend('adminLoginLayout', function(model){
     @html.block('errorMessage', function(model){
     	@if(model.message){
 	        <div class="row">

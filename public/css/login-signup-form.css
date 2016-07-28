@@ -1,30 +1,73 @@
-label{
-	margin-top: 5px;
-	float: left;
-}
-
-input{
-	float: right;
-}
-
-button {
-	margin-top: 10px;
-	background-color: transparent;
-    border: 1px solid #00c6d7;
-    border-radius: 6px;
-    box-shadow: 0 1px 0 0 #a3a3a3 inset;
-    color: white;
-    cursor: pointer;
-    display: inline-block;
-    font-family: Arial;
-    font-size: 15px;
-    font-weight: bold;
-    padding: 6px 24px;
-    text-decoration: none;
-}
-
 #form-error-msg{
-	border-color: red;
-	background-color: red;
+	border-color: #DF251F;
+	background-color: #DF251F;
 	color: white;
+}
+
+.custom-index-buttons{
+    font-size: 20px;
+    font-weight: bolder;
+    /*width: 15%;*/
+}
+
+.custom-login-buttons{
+    font-size: 20px;
+    font-weight: bolder;
+}
+
+.custom-type-img{
+    height: auto;
+    width: 50px;
+    display: inline;
+    margin-bottom: 0px;
+}
+
+.custom-type-buttons{
+    font-size: 20px;
+    font-weight: bolder;
+    width: 80%;
+}
+
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: #808080;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color: #808080;
+   opacity: 1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color: #808080;
+   opacity: 1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color: #808080;
+}
+
+.wrapper input[type="text"] {
+    position: relative; 
+}
+
+select {
+    width: 80%;
+}
+
+input[type="number"] {
+    width: 80%;
+}
+
+input { font-family: 'FontAwesome'; } /* This is for the placeholder */
+
+.wrapper:before {
+    font-family: 'FontAwesome';
+    color:red;
+    position: relative;
+    left: -5px;
+    content: "\f007";
+}
+
+.question-header{
+  text-align: left;
+  color: #2C3E50;
+  margin-left: 35px;
+  margin-right: 35px;
 }

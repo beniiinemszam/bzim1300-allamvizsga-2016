@@ -60,7 +60,13 @@
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
                     <div class="intro-text">
-                        @html.block('errorMessage')
+                        <h2>New Type</h2>
+                        <hr>
+                        <form action='/trynewtype' method='post'>
+							<input type='text' name='typename' require placeholder="&#xf0c0; Type name"><br><br>
+							<input type='number' name='number' min='1' placeholder="&#xf162;  Question number"><br><br>
+							<input type='submit' value='Add new type' class="btn btn-default custom-login-buttons">
+						</form>
                     </div>
                 </div>
             </div>
@@ -139,6 +145,9 @@
 
     <!-- Theme JavaScript -->
     <script src="/js/freelancer.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="/js/post_request.min.js"></script>
 
 </body>
 

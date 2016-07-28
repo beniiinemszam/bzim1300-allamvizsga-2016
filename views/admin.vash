@@ -1,0 +1,9 @@
+@html.extend('adminLayout', function(model){
+    @html.block('list', function(model){
+    	@if(model.admin){
+    		<form action='/addeditor' method='get'>
+	        	<input type='submit' value="New Editor" class="btn btn-default custom-type-buttons">
+	        </form><br>
+		}
+    });
+})

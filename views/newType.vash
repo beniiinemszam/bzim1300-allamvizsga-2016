@@ -1,0 +1,5 @@
+@html.extend('newTypeLayout', function(model){
+    @html.block('list', function(model){
+    	
+    });
+})

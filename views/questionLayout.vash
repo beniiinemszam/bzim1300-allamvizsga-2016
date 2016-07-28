@@ -12,7 +12,7 @@
     <title>Dolgozat neve</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Theme CSS -->
     <link href="/css/freelancer.min.css" rel="stylesheet">
@@ -60,7 +60,9 @@
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
                     <div class="intro-text">
-                        @html.block('errorMessage')
+                        <h2>@model.question</h2>
+						<hr>
+						@html.block('answers')
                     </div>
                 </div>
             </div>
@@ -139,6 +141,9 @@
 
     <!-- Theme JavaScript -->
     <script src="/js/freelancer.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="/js/question.js"></script>
 
 </body>
 

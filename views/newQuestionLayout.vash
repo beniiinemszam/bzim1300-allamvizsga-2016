@@ -60,7 +60,21 @@
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
                     <div class="intro-text">
-                        @html.block('errorMessage')
+                    	<h2>New Question</h2>
+                    	<hr>
+                        <form action='/trynewquestion' method='post'>
+                        	<h4 class='question-header'>Type of question</h4>
+							@html.block('types')
+							<h4 class='question-header'>Question</h4>
+							<input type='text' name='question' require placeholder='&#xf128;  Question'><br>
+							<h4 class='question-header'>Correct answer</h4>
+							<input type='text' name='canswer' require placeholder='&#xf00c; Correct answer'><br>
+							<h4 class='question-header'>Wrong answer</h4>
+							<input type='text' name='wanswer1' require placeholder='&#xf00d; Wrong answer nr. 1'><br>
+							<input type='text' name='wanswer2' require placeholder='&#xf00d; Wrong answer nr. 2'><br>
+							<input type='text' name='wanswer3' require placeholder='&#xf00d; Wrong answer nr. 3'><br><br>
+							<input type='submit' value='Add new question' class='btn btn-default custom-type-buttons'>
+						</form>
                     </div>
                 </div>
             </div>
