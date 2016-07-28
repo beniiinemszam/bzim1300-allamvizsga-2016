@@ -78,10 +78,12 @@ function checkAuthAdmin(req,res,next){
 }
 
 function addZero(i) {
-    if (i < 10) {
-    	i = "0" + i;
-    }
-    return i;
+	if(i){
+	    if (i < 10) {
+	    	i = "0" + i;
+	    }
+	    return i;
+	}
 }
 
 function renderError(res, name, msg, ecode){
@@ -160,6 +162,11 @@ app.post("/trysignup",function(req,res){
 	pass 		= req.body.password;
 	email 		= req.body.email;
 
+	if(username == null || pass == null || email== null){
+		renderError(res, 'error', 'All parameter is required!', 403);
+		return;
+	}
+
 	neo4j.newUser(username,pass,email,function(success){
 		if(success){
 			sessionNewPage(req, '/authenticate', username);
@@ -174,6 +181,11 @@ app.post("/trysignup",function(req,res){
 app.post("/authenticate",function(req,res){
 	username 	= req.body.username;
 	pass 		= req.body.password;
+
+	if(username == null || pass == null){
+		renderError(res, 'error', 'All parameter is required!', 403);
+		return;
+	}
 
 	neo4j.authenticateUser(username, pass, false, function(success){
 		if(success){
@@ -200,6 +212,8 @@ app.get("/types", checkAuth, function(req,res){
 		}
 	});
 });
+
+/*lekerni az osszes kviz id, osszekeverni, elso n-et megmutatni*/
 
 app.post("/quiz/:type", checkAuth, function(req,res){
 	var sess 		= req.session;
@@ -298,6 +312,11 @@ app.post("/authenticateAdmin",function(req,res){
 	username 	= req.body.username;
 	pass 		= req.body.password;
 
+	if(username == null || pass == null){
+		renderError(res, 'error', 'All parameter is required!', 403);
+		return;
+	}
+
 	neo4j.authenticateUser(username, pass, true, function(success){
 		if(success){
 			res.writeHead(301,
@@ -322,6 +341,12 @@ app.get("/addeditor", checkAuthAdmin, function(req, res){
 
 app.post("/tryneweditor", checkAuthAdmin, function(req, res){
 	var email = req.body.email;
+
+	if(email == null){
+		renderError(res, 'error', 'All parameter is required!', 403);
+		return;
+	}
+
 	neo4j.newEditor(email, function(success){
 		if(success){
 			res.render('admin',
@@ -343,6 +368,12 @@ app.post("/trynewtype", checkAuthAdmin, function(req, res){
 	var typename 	= req.body.typename;
 	var qnumber 	= req.body.number;
 	var type 		= new QuestionType(typename, qnumber);
+
+	if(typename == null || qnumber==null || type== null){
+		renderError(res, 'error', 'All parameter is required!', 403);
+		return;
+	}
+
 	neo4j.newType(type, function(success){
 		if(success){
 			res.render('admin');
@@ -369,7 +400,6 @@ app.get("/newquestion", checkAuthAdmin, function(req, res){
 
 app.post("/trynewquestion", checkAuthAdmin, function(req, res){
 	var sess 		= req.session;
-	var Username 	= sess.username;
 
 	var d 	= new Date();
     var h 	= addZero(d.getHours(), 2);
@@ -378,6 +408,11 @@ app.post("/trynewquestion", checkAuthAdmin, function(req, res){
     var ms 	= addZero(d.getMilliseconds(), 3);
 
 	var id 			= (h*1000000 + m*10000 + s*100 + ms)*10;
+
+	if(req.body.question == null || req.body.canswer == null || req.body.wanswer1 == null || req.body.wanswer2 == null || req.body.wanswer3 == null || req.body.type==null){
+		renderError(res, 'error', 'All parameter is required!', 403);
+		return;
+	}
 
 	var question 	= req.body.question;
 	var canswer 	= new Answer(req.body.canswer, true, id + 1);

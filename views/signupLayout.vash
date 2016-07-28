@@ -65,10 +65,10 @@
                         @html.block('errorMessage')
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
-                                <form id="loginForm" action="javascript:void(0);">
+                                <form id="signupForm" action="javascript:void(0);">
                                     <input type="text" name="username" required placeholder="&#61447; Username"><br><br>
                                     <input type="password" name="password" required placeholder="&#xf023; Password"><br><br>
-                                    <input type="password" name="password" required placeholder="&#xf0e0; E-mail"><br><br>
+                                    <input type="password" name="email" required placeholder="&#xf0e0; E-mail"><br><br>
                                     <button onclick="signup()" class="btn btn-default custom-login-buttons">submit</button>
                                 </form>
                             </div>
