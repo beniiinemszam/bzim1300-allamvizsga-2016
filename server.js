@@ -14,6 +14,7 @@ var app 			= express();
 
 
 app.set('view engine', 'vash');
+app.disable('view cache');
 
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
@@ -24,7 +25,7 @@ app.use(session({
   	saveUninitialized: true
 }));
 
-function checkAuth(req,res,next){
+function checkAuth(req, res, next){
 	var sess 		= req.session;
 	var username 	= sess.username;
 	// var pathname 	= url.parse(req.url).pathname;
@@ -51,7 +52,7 @@ function checkAuth(req,res,next){
 	next();
 }
 
-function checkAuthAdmin(req,res,next){
+function checkAuthAdmin(req, res, next){
 	var sess 		= req.session;
 	var username 	= sess.username;
 	//var pathname 	= url.parse(req.url).pathname;
@@ -95,6 +96,7 @@ function renderError(res, name, msg, ecode){
 }
 
 function redirect(res, url, params){
+	res.setHeader('Cache-Control', 'no-cache');
 	res.writeHead(301,
 	  {Location: url}
 	);
@@ -145,19 +147,46 @@ function sendQuestion(res, array, data){
 	});
 }
 
-app.get("/",function(req,res){
-	res.sendFile(path.join(__dirname+"/views/index.html")); 
+function deleteSession(req){
+	var sess 			= req.session;	
+	sess.userpoint 		= null;
+	sess.username 		= null;
+	sess.qnumber 		= null;
+	sess.qtype 			= null;
+	sess.befques 		= null;
+	sess.secretadminkey = null;
+	sess.secretkey 		= null;
+}
+
+app.get("/", function(req, res){
+	var sess 		= req.session;
+	var username 	= sess.secretkey;
+	var guest 		= null;
+	if(username == null){
+		guest = true;
+	}
+	//res.sendFile(path.join(__dirname+"/views/index.html")); 
+	res.render('index',
+	{
+		user: 	sess.secretkey,
+		guest: 	guest
+	});
 });
 
-app.get("/login",function(req,res){
+app.get("/login", function(req, res){
 	res.render('login');
 });
 
-app.get("/signup",function(req,res){
+app.get("/logout", function(req, res){
+	deleteSession(req);
+	redirect(res,'/');
+});
+
+app.get("/signup", function(req, res){
 	res.render('signup');
 });
 
-app.post("/trysignup",function(req,res){
+app.post("/trysignup", function(req, res){
 	username 	= req.body.username;
 	pass 		= req.body.password;
 	email 		= req.body.email;
@@ -167,7 +196,7 @@ app.post("/trysignup",function(req,res){
 		return;
 	}
 
-	neo4j.newUser(username,pass,email,function(success){
+	neo4j.newUser(username, pass, email, function(success){
 		if(success){
 			sessionNewPage(req, '/authenticate', username);
 			redirect(res,'/types');
@@ -178,7 +207,7 @@ app.post("/trysignup",function(req,res){
 	})
 });
 
-app.post("/authenticate",function(req,res){
+app.post("/authenticate", function(req, res){
 	username 	= req.body.username;
 	pass 		= req.body.password;
 
@@ -198,7 +227,7 @@ app.post("/authenticate",function(req,res){
 	})
 });
 
-app.get("/types", checkAuth, function(req,res){
+app.get("/types", checkAuth, function(req, res){
 	var point = req.body.point;
 	neo4j.getQuestionTypes(function(records){
 		if(records){
@@ -215,50 +244,91 @@ app.get("/types", checkAuth, function(req,res){
 
 /*lekerni az osszes kviz id, osszekeverni, elso n-et megmutatni*/
 
-app.post("/quiz/:type", checkAuth, function(req,res){
+app.get("/description/:type", checkAuth, function(req, res){
+	neo4j.getQuestionType(req.params.type, function(data){
+		res.render('description', 
+		{
+			descr: 	data.getDescription(),
+			type:	data.getName(),
+			numbr: 	data.getQuestionNumber()
+		});
+	});
+});
+
+app.post("/quiz/:type", checkAuth, function(req, res){
 	var sess 		= req.session;
 	var username 	= sess.username;
 	var point		= sess.userpoint;
 	var qn 			= sess.qnumber;
+	var qtn 		= sess.qtnumber;
 	var qt 	 		= sess.qtype;
 	var type 		= req.params.type;
 	var befques 	= sess.befques;
 
-	if(point==null || qn==null || qt!=type ||befques==null){
+	if(point==null || qn==null || qt!=type || qtn==null || befques==null){
 		sess.userpoint 	= 0;
 		sess.qnumber 	= 0;
 		sess.qtype 		= type;
-		neo4j.getQuestion(null, type, function(data){
-			if(data){
-				var array = [data.getWrong1(),data.getWrong2(),data.getWrong3(),data.getCorrect()];
-				array = shuffle(array);				
-				sess.befques 	= [data.getID()];
-				sendQuestion(res, array, data);
-			}
-			else{
-				renderError(res, 'error', 'Internal Server Error!', 500);
-			}
+		neo4j.getQuestionType(type, function(qtype){
+			qtn = qtype.getQuestionNumber().low;
+			sess.qtnumber = qtn;
+
+			neo4j.getQuestionsID(type, function(result){
+				result = shuffle(result);
+				if(result.length > qtn){
+					result.length = qtn;
+				}
+
+				befques 		= result;
+				sess.befques 	= befques;
+
+				neo4j.getQuestion(befques[0], type, function(data){
+					if(data){
+						var array = [data.getWrong1(),data.getWrong2(),data.getWrong3(),data.getCorrect()];
+						array = shuffle(array);
+						sendQuestion(res, array, data);
+					}
+					else{
+						renderError(res, 'error', 'Internal Server Error!', 500);
+					}
+				});
+			});
 		});
+		
 		return;
 	}
 	
 	var ansID = req.body.ansID;
 	if (ansID==null){
-		sess.userpoint 	= null;
-		sess.qnumber 	= null;
-		sess.qtype 		= null;
-		sess.befques 	= null;
-		neo4j.getQuestion(null, type, function(data){
-			if(data){
-				var array 		= [data.getWrong1(),data.getWrong2(),data.getWrong3(),data.getCorrect()];
-				array 			= shuffle(array);
-				sess.befques 	= [data.getID()];
-				sendQuestion(res, array, data);
-			}
-			else{
-				renderError(res, 'error', 'Internal Server Error!', 500);
-			}
+		sess.userpoint 	= 0;
+		sess.qnumber 	= 0;
+		sess.qtype 		= type;
+		neo4j.getQuestionType(type, function(qtype){
+			qtn = qtype.getQuestionNumber();
+			sess.qtnumber = qtn;
+
+			neo4j.getQuestionsID(type, function(result){
+				result = shuffle(result);
+				if(result.length>qtn){
+					result.length = qtn;
+				}
+
+				befques 		= result;
+				sess.befques 	= befques;
+
+				neo4j.getQuestion(befques[0], type, function(data){
+					if(data){
+						var array = [data.getWrong1(),data.getWrong2(),data.getWrong3(),data.getCorrect()];
+						array = shuffle(array);
+						sendQuestion(res, array, data);
+					}
+					else{
+						renderError(res, 'error', 'Internal Server Error!', 500);
+					}
+				});
+			});
 		});
+		
 		return;
 	}
 
@@ -266,38 +336,39 @@ app.post("/quiz/:type", checkAuth, function(req,res){
 		if(correct){
 			sess.userpoint = point + 1;
 		}
-		sess.qnumber = qn + 1;
+		qn 				= qn + 1;
+		sess.qnumber 	= qn;
 
-		neo4j.getQuestionType(type, function(qtype){
-			if(qtype.getQuestionNumber()==qn + 1){
-				console.log("correct(s) nr.:" + sess.userpoint);
-				var params 			= {};
-				params['point'] 	= sess.userpoint;
-				params['qnumber'] 	= sess.qnumber;
-				sess.userpoint 	= null;
-				sess.qnumber 	= null;
-				sess.qtype 		= null;
-				sess.befques 	= null;
-				redirect(res, '/types', params);
-			}
-			else{
-				neo4j.getQuestion(sess.befques, type, function(data){
-					if(data){
-						var array 		= [data.getWrong1(),data.getWrong2(),data.getWrong3(),data.getCorrect()];
-						array 			= shuffle(array);
-						sess.befques 	= [data.getID()];
-						sendQuestion(res, array, data);
-					}
-					else{
-						renderError(res, 'error', 'Internal Server Error!', 500);
-					}
-				});
-			}
-		});		
+		if(qtn == qn){
+			var params 			= {};
+			var userpoint		= sess.userpoint;
+			var qnumber 		= sess.qnumber;
+			sess.userpoint 		= null;
+			sess.qnumber 		= null;
+			sess.qtype 			= null;
+			sess.befques 		= null;
+			res.render('complete',
+			{
+				qnum: qnumber,
+				corr: userpoint
+			});
+		}
+		else{
+			neo4j.getQuestion(befques[qn], type, function(data){
+				if(data){
+					var array 		= [data.getWrong1(),data.getWrong2(),data.getWrong3(),data.getCorrect()];
+					array 			= shuffle(array);
+					sendQuestion(res, array, data);
+				}
+				else{
+					renderError(res, 'error', 'Internal Server Error!', 500);
+				}
+			});
+		}	
 	});
 })
 
-app.get("/admin", checkAuthAdmin, function(req,res){
+app.get("/admin", checkAuthAdmin, function(req, res){
 	var sess 		= req.session;
 	var username 	= sess.username;
 	var isAdmin		= sess.isAdmin || false;		
@@ -307,7 +378,7 @@ app.get("/admin", checkAuthAdmin, function(req,res){
 	});
 });
 
-app.post("/authenticateAdmin",function(req,res){
+app.post("/authenticateAdmin",function(req, res){
 	username 	= req.body.username;
 	pass 		= req.body.password;
 
@@ -383,12 +454,13 @@ app.get("/newtype", checkAuthAdmin, function(req, res){
 app.post("/trynewtype", checkAuthAdmin, function(req, res){
 	var typename 	= req.body.typename;
 	var qnumber 	= req.body.number;
-	var type 		= new QuestionType(typename, qnumber);
+	var descr 		= req.body.description;
+	var type 		= new QuestionType(typename, qnumber, descr);
 	var sess 		= req.session;
 	var isAdmin		= sess.isAdmin || false;
 
-	if(typename == null || qnumber==null || type== null){
-		renderError(res, 'error', 'All parameter is required!', 403);
+	if(typename == null){
+		renderError(res, 'error', 'Type name is required!', 403);
 		return;
 	}
 
@@ -458,11 +530,12 @@ app.post("/trynewquestion", checkAuthAdmin, function(req, res){
 	})
 });
 
-app.get("/test",function(req,res){
-	var params 			= {};
-				params['point'] 	= "asd";
-				params['qnumber'] 	= "222";
-				redirect(res, '/types', params);
+app.get('/test', function(req, res){
+	neo4j.getQuestionsID('test44', function(result){
+		console.log(result);
+		result.length = 1;
+		console.log(result);
+	});
 });
 
 app.use(function(req, res){

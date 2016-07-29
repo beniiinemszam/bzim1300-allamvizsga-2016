@@ -47,6 +47,9 @@
                     <li class="page-scroll">
                         <a href="#contact">Contact</a>
                     </li>
+                    <li class="page-scroll">
+                        <a href="/logout">Log out</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -64,7 +67,8 @@
                         <hr>
                         <form action='/trynewtype' method='post'>
 							<input type='text' name='typename' require placeholder="&#xf0c0; Type name"><br><br>
-							<input type='number' name='number' min='1' placeholder="&#xf162;  Question number"><br><br>
+							<input type='number' name='number' min='1' max='50' placeholder="&#xf162;  Question number"><br><br>
+                            <textarea name="description" cols="40" rows="5" placeholder='&#xf129; Descriptiom'></textarea><br><br>
 							<input type='submit' value='Add new type' class="btn btn-default custom-login-buttons">
 						</form>
                     </div>

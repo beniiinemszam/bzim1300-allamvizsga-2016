@@ -19,7 +19,7 @@
     <link href="/css/login-signup-form.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 
@@ -63,9 +63,9 @@
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
                     <div class="intro-text">
-                        <h2>@model.question</h2>
-						<hr>
-						@html.block('answers')
+                        <h2>Description</h2>
+                        <hr>
+                        @html.block('description')
                     </div>
                 </div>
             </div>
@@ -144,9 +144,6 @@
 
     <!-- Theme JavaScript -->
     <script src="/js/freelancer.min.js"></script>
-
-    <!-- Custom JavaScript -->
-    <script src="/js/question.js"></script>
 
 </body>
 

@@ -1,0 +1,16 @@
+@html.extend('descriptionLayout', function(model){
+    @html.block('description', function(model){
+    	<p class="description-paragraph">@model.descr</p><br>
+        <p class="description-paragraph">Question numbers: @model.numbr</p><br>
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <a href="/types" class="btn btn-danger custom-type-buttons">Types</a>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <form action='/quiz/@model.type' method='post'>
+                    <button class="btn btn-default custom-type-buttons">Next</button>
+                </form>           
+            </div>
+        </div>
+    })
+})

@@ -11,7 +11,7 @@
 		@model.data.forEach(function(item){
 			<div class="row">
 				<div class="col-md-12">
-					<form action='/quiz/@item' method='post'>
+					<form action='/description/@item' method='get'>
 						<img class="custom-type-img" src="/img/question.png">
 						<button class="btn btn-default custom-type-buttons">@item</button>
 					</form>

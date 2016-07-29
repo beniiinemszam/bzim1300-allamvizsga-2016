@@ -4,12 +4,12 @@ var QuestionType  = require(path.join(__dirname + "/../models/QuestionType"));
 var Question      = require(path.join(__dirname + "/../models/Question"));
 var Answer        = require(path.join(__dirname + "/../models/Answer"));
 
-// var driver        = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "neo4jpassword"));
+var driver        = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "neo4jpassword"));
 
-var graphenedbURL   = process.env.GRAPHENEDB_BOLT_URL;
+/*var graphenedbURL   = process.env.GRAPHENEDB_BOLT_URL;
 var graphenedbUser  = process.env.GRAPHENEDB_BOLT_USER;
 var graphenedbPass  = process.env.GRAPHENEDB_BOLT_PASSWORD;
-var driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser, graphenedbPass));
+var driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser, graphenedbPass));*/
 
 var self = module.exports = {
   authenticateUser: function (name, pass, admin, callback) {
@@ -152,10 +152,10 @@ var self = module.exports = {
     var session = driver.session();
     var data    = null;
     session
-      .run("match(t:Type) where t.name={typename} return t.questionNumber as questionNumber limit 1",{typename: name})
+      .run("match(t:Type) where t.name={typename} return t.questionNumber as questionNumber, t.description as description limit 1",{typename: name})
       .subscribe({
         onNext: function(record){
-          data = new QuestionType(name, record.get("questionNumber"));
+          data = new QuestionType(name, record.get("questionNumber"), record.get("description"));
         },
         onCompleted: function(){
           session.close();
@@ -190,7 +190,12 @@ var self = module.exports = {
   newType: function(type, callback){
     var session = driver.session();
     session
-      .run("Create (t:Type{name:{typename}, questionNumber:{qnumber}}) return t.name",{typename: type.getName(), qnumber: type.getQuestionNumber()})
+      .run("Create (t:Type{name:{typename}, questionNumber:{qnumber}, description:{descriptionpar}}) return t.name",
+        {
+          typename:       type.getName(),
+          qnumber:        type.getQuestionNumber(),
+          descriptionpar: type.getDescription()
+        })
       .then(function(record){
         session.close();
         callback(true);
@@ -252,21 +257,39 @@ var self = module.exports = {
         callback(false);
       });
   },
-  getQuestion: function(array, type, callback){
-    var str = '';
+  getQuestionsID: function(type, callback){
+    var session = driver.session();
+    session
+      .run("Match (:Type{name:{tname}})<-[:TypeOfQuestion]-(q:Question) return q.id as qid",{tname: type})
+      .then(function(result){
+        var array = [];
+        for(var i=0;i<result.records.length;i++){
+          array.push(result.records[i].get("qid"));
+        }
+
+        session.close();
+        callback(array);
+      })
+      .catch(function(error){
+        console.log(error.stack);
+        session.close();
+        callback(null);
+      });
+  }, 
+  getQuestion: function(id, type, callback){
+    /*var str = '';
     if(array!=null){
       str = "where ";
       for(var i=0;i<array.length-1;i++){
         str+="q.id<>"+array[i]+", ";
       }
       str+="q.id<>"+array[array.length-1];
-    }
+    }*/
 
     var session = driver.session();
-    var sql = 
     session
-      .run('Match (:Type{name:{tname}})<-[:TypeOfQuestion]-(q:Question)<-[ar:answer]-(a:Answer) ' + str + ' \
-        return q.id as qid, q.question as question, ar.isCorrect as correct, a.id as aid, a.name as answer limit 4',{tname: type})
+      .run('Match (q:Question{id:{parid}})<-[ar:answer]-(a:Answer) \
+        return q.id as qid, q.question as question, ar.isCorrect as correct, a.id as aid, a.name as answer limit 4',{tname: type, parid: id})
       .then(function (result) {
         var records = [];
         for (i = 0; i < result.records.length; i++) {

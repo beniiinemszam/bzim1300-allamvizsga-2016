@@ -1,0 +1,40 @@
+@html.extend('indexLayout', function(model){
+    @html.block('buttons', function(model){
+    	@if(model.guest){
+            <hr class="star-light">
+    		<div class="row">
+                <div class="col-md-offset-3 col-md-6">
+                    <div class="row">
+                        <div class="col-md-offset-3 col-md-3 col-sm-6">
+                            <a href="/login" class="btn btn-danger custom-type-buttons">Log in</a>
+
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <a href="/signup" class="btn btn-default custom-type-buttons">Sign up</a>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+		}
+        else{
+            <hr class="star-light">
+            <div class="row">
+                <div class="col-md-offset-3 col-md-6">
+                    <div class="row">
+                        <div class="col-md-offset-3 col-md-6 col-sm-12">
+                            <a href="/types" class="btn btn-danger custom-type-buttons">Types</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    })
+    @html.block('logout', function(model){
+    	@if(model.user){
+    		<li class="page-scroll">
+                <a href="/logout">Log out</a>
+            </li>
+		}
+    })
+})

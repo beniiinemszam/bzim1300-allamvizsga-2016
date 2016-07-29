@@ -25,7 +25,7 @@
 .custom-type-buttons{
     font-size: 20px;
     font-weight: bolder;
-    width: 80%;
+    width: 80%;    
 }
 
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
@@ -55,6 +55,11 @@ input[type="number"] {
     width: 80%;
 }
 
+textarea{
+  width: 80%;
+  font-family: FontAwesome;
+}
+
 input { font-family: 'FontAwesome'; } /* This is for the placeholder */
 
 .wrapper:before {
@@ -70,4 +75,10 @@ input { font-family: 'FontAwesome'; } /* This is for the placeholder */
   color: #2C3E50;
   margin-left: 35px;
   margin-right: 35px;
+}
+
+.description-paragraph{
+  font-size: 18px;
+  text-align:justify;
+  font-weight: bolder;
 }

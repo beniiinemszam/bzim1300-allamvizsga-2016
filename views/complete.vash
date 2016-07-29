@@ -1,0 +1,10 @@
+@html.extend('completeLayout', function(model){
+    @html.block('complete', function(model){
+    	<p class="description-paragraph">You completed with @model.qnum / @model.corr proportion.</p><br>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <a href="/types" class="btn btn-danger custom-type-buttons">Types</a>
+            </div>
+        </div>
+    })
+})
