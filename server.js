@@ -270,7 +270,7 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 		sess.qnumber 	= 0;
 		sess.qtype 		= type;
 		neo4j.getQuestionType(type, function(qtype){
-			qtn = qtype.getQuestionNumber().low;
+			qtn = parseInt(qtype.getQuestionNumber());
 			sess.qtnumber = qtn;
 
 			neo4j.getQuestionsID(type, function(result){
@@ -304,7 +304,7 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 		sess.qnumber 	= 0;
 		sess.qtype 		= type;
 		neo4j.getQuestionType(type, function(qtype){
-			qtn = qtype.getQuestionNumber();
+			qtn = parseInt(qtype.getQuestionNumber());
 			sess.qtnumber = qtn;
 
 			neo4j.getQuestionsID(type, function(result){

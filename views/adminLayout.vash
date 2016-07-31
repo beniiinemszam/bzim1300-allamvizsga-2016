@@ -12,7 +12,7 @@
     <title>Dolgozat neve</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Theme CSS -->
     <link href="/css/freelancer.min.css" rel="stylesheet">
@@ -67,7 +67,7 @@
 						<hr>
 						@html.block('list')
 						<form action='/newtype' method='get'>
-				        	<input type='submit' value="New type" class="btn btn-default custom-type-buttons">
+				        	<input type='submit' value="New Type" class="btn btn-default custom-type-buttons">
 				        </form><br>
 				        <form action='/newquestion' method='get'>
 				        	<input type='submit' value="New Question" class="btn btn-default custom-type-buttons">

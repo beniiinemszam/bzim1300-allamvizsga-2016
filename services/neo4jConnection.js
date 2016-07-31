@@ -132,7 +132,7 @@ var self = module.exports = {
     var session = driver.session();
     var data = [];
     session
-      .run("match (t:Type) return t.name as name")
+      .run("match (t:Type) return distinct t.name as name")
       .subscribe({
         onNext: function(record){
           data.push(record.get('name'));
@@ -156,6 +156,8 @@ var self = module.exports = {
       .subscribe({
         onNext: function(record){
           data = new QuestionType(name, record.get("questionNumber"), record.get("description"));
+          console.log(record.get("questionNumber")+"asd");
+          console.log(data.getQuestionNumber()+"asdasd");
         },
         onCompleted: function(){
           session.close();
