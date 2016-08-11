@@ -1,0 +1,39 @@
+{"level":"info","message":"info","timestamp":"2016-08-11T14:02:20.187Z"}
+{"level":"info","message":"test message my string","timestamp":"2016-08-11T14:25:47.426Z"}
+{"level":"info","message":"test message my string","timestamp":"2016-08-11T14:26:06.591Z"}
+{"level":"info","message":" my string test message","timestamp":"2016-08-11T14:26:18.376Z"}
+{"level":"info","message":" my string test message","timestamp":"2016-08-11T14:26:34.431Z"}
+{"level":"info","message":" my string test message","timestamp":"2016-08-11T14:26:36.428Z"}
+{"level":"info","message":"tesztteszt signed up!","timestamp":"2016-08-11T15:04:16.197Z"}
+{"admin":true,"level":"info","message":"beniii loged in!","timestamp":"2016-08-11T15:07:57.636Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T15:18:35.480Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-11T15:18:51.029Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T18:03:03.278Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T18:07:10.996Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T18:09:09.828Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T18:20:06.253Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T18:20:18.018Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T18:22:12.125Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T18:30:47.377Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-11T18:31:03.717Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T18:33:07.055Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T18:33:43.872Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T18:33:45.327Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-11T18:33:56.443Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:03:08.431Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:04:22.877Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-11T19:04:34.640Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:04:49.712Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:06:18.010Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:07:10.876Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:08:53.873Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:15:00.347Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:15:54.935Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:16:20.663Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:17:22.488Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:21:06.073Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:21:44.985Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:28:10.682Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:28:39.421Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:29:08.534Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-11T19:29:09.698Z"}
