@@ -11,7 +11,7 @@ var encoding		= require(path.join(__dirname + "/services/encoding"));
 var Question		= require(path.join(__dirname + "/models/Question"));
 var QuestionType	= require(path.join(__dirname + "/models/QuestionType"));
 var Answer        	= require(path.join(__dirname + "/models/Answer"));
-
+//pasport.js authentication
 var app 			= express();
 
 
@@ -89,16 +89,19 @@ function checkAuthAdmin(req, res, next){
 	next();
 }
 
-function addZero(i) {
+function addZero(i, callback) {
 	if(i){
 	    if (i < 10) {
 	    	i = "0" + i;
 	    }
-	    return i;
+	    return callback(null, i);
 	}
+	logger.error("Missing number in adZero!");
+	callback(new Error("Internal server error!"));
 }
 
 function renderError(res, name, msg, ecode){
+	res.status(ecode);
 	res.render(name,
 	{
 		message: msg,
@@ -130,7 +133,10 @@ function sessionNewPage(req, url, username){
 	});
 }
 
-function shuffle(array) {
+function shuffle(array, callback) {
+	if(array==null){
+		return callback(new Error("Array is empty - in shuffle!"));
+	}
     var j, x, i;
     for (i = array.length; i; i--) {
         j = Math.floor(Math.random() * i);
@@ -138,11 +144,11 @@ function shuffle(array) {
         array[i - 1] 	= array[j];
         array[j] 		= x;
     }
-
-    return array;
+    callback(null, array);
 }
 
 function sendQuestion(res, array, data){
+	logger.debug(array[0]);
 	res.render('question',
 	{
 		question: 	data.getQuestion(),
@@ -176,7 +182,7 @@ app.get("/", function(req, res){
 	if(username == null){
 		guest = true;
 	}
-	
+
 	res.render('index',
 	{
 		user: 	sess.secretkey,
@@ -316,7 +322,15 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 				});
 			},
 			function(qtn, result, callback){
-				result = shuffle(result);
+				shuffle(result, function(err, array){
+					if(err!=null){
+						renderError(res, 'error', err.message, 500);
+					}
+					callback(null, qtn, array);
+				});
+			},
+			function(qtn, result, callback){
+				logger.debug('1');
 				if(result.length > qtn){
 					result.length = qtn;
 				}
@@ -326,13 +340,21 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 
 				neo4j.getQuestion(befques[0], type, function(err, data){
 					if(err==null){
-						var array = [data.getWrong1(),data.getWrong2(),data.getWrong3(),data.getCorrect()];
-						array = shuffle(array);
-						sendQuestion(res, array, data);
+						var array = [data.getWrong1(), data.getWrong2(), data.getWrong3(), data.getCorrect()];
+						callback(null, data, array);
 					}
 					else{
 						renderError(res, 'error', err.message, 500);
 					}
+				});
+			},
+			function(data, array, callback){
+				logger.debug('2');
+				shuffle(array, function(err, array2){
+					if(err!=null){
+						renderError(res, 'error', err.message, 500);
+					}
+					sendQuestion(res, array2, data);
 				});
 			}
 		],function(err){
@@ -372,7 +394,14 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 				});
 			},
 			function(qtn, result, callback){
-				result = shuffle(result);
+				shuffle(result, function(err, array){
+					if(err!=null){
+						renderError(res, 'error', err.message, 500);
+					}
+					callback(null, qtn, array);
+				});
+			},
+			function(qtn, result, callback){
 				if(result.length > qtn){
 					result.length = qtn;
 				}
@@ -383,12 +412,19 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 				neo4j.getQuestion(befques[0], type, function(err, data){
 					if(err==null){
 						var array = [data.getWrong1(),data.getWrong2(),data.getWrong3(),data.getCorrect()];
-						array = shuffle(array);
-						sendQuestion(res, array, data);
+						callback(null, data, array);
 					}
 					else{
 						renderError(res, 'error', err.message, 500);
 					}
+				});
+			},
+			function(data, array, callback){
+				shuffle(array, function(err, array2){
+					if(err!=null){
+						renderError(res, 'error', err.message, 500);
+					}
+					sendQuestion(res, array2, data);
 				});
 			}
 		],function(err){
@@ -432,13 +468,20 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 		function(msg, callback){
 			neo4j.getQuestion(befques[qn], type, function(err, data){
 				if(err==null){
-					var array 		= [data.getWrong1(),data.getWrong2(),data.getWrong3(),data.getCorrect()];
-					array 			= shuffle(array);
-					sendQuestion(res, array, data);
+					var array 		= [data.getWrong1(), data.getWrong2(), data.getWrong3(), data.getCorrect()];
+					callback(null, data, array);
 				}
 				else{
 					renderError(res, 'error', err.message, 500);
 				}
+			});
+		},
+		function(data, array, callback){
+			shuffle(array, function(err, array2){
+				if(err!=null){
+					renderError(res, 'error', err.message, 500);
+				}
+				sendQuestion(res, array2, data);
 			});
 		}
 	],function(err){
@@ -446,10 +489,6 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 		renderError(res, 'error', err.message, 500);
 	});
 });
-
-function quizeinit(){
-
-}
 
 app.get("/admin", checkAuthAdmin, function(req, res){
 	var sess 		= req.session;
@@ -596,12 +635,36 @@ app.post("/trynewquestion", checkAuthAdmin, function(req, res){
 	var isAdmin		= sess.isAdmin || false;
 
 	var d 	= new Date();
-    var h 	= addZero(d.getHours(), 2);
-    var m 	= addZero(d.getMinutes(), 2);
-    var s 	= addZero(d.getSeconds(), 2);
-    var ms 	= addZero(d.getMilliseconds(), 3);
+    addZero(d.getHours(), function(err, data){
+    	if(err!=null){
+    		renderError(res, 'error', 'All parameter is required!', 403);
+			return;
+    	}
+    	h = data;
+    });
+    addZero(d.getMinutes(), function(err, data){
+    	if(err!=null){
+    		renderError(res, 'error', 'All parameter is required!', 403);
+			return;
+    	}
+    	m = data;
+    });
+    addZero(d.getSeconds(), function(err, data){
+    	if(err!=null){
+    		renderError(res, 'error', 'All parameter is required!', 403);
+			return;
+    	}
+    	s = data;
+    });
+    addZero(d.getMilliseconds(), function(err, data){
+    	if(err!=null){
+    		renderError(res, 'error', 'All parameter is required!', 403);
+			return;
+    	}
+    	ms = data;
+    });
 
-	var id 			= (h*1000000 + m*10000 + s*100 + ms)*10;
+	var id = (h*1000000 + m*10000 + s*100 + ms)*10;
 
 	if(req.body.question == null || req.body.canswer == null || req.body.wanswer1 == null || req.body.wanswer2 == null || req.body.wanswer3 == null || req.body.type==null){
 		renderError(res, 'error', 'All parameter is required!', 403);
@@ -630,12 +693,6 @@ app.post("/trynewquestion", checkAuthAdmin, function(req, res){
 	})
 });
 
-app.get('/test', function(req, res){
-	logger.info(" %s test message", 'my string');
-	logger.debug('debug');
-	renderError(res, 'error', 'Not Found!', 404);
-});
-
 app.use(function(req, res){
 	renderError(res, 'error', 'Not Found!', 404);
 });
@@ -653,3 +710,5 @@ process.on('uncaughtException', function(err) {
     logger.info('process.on handler');
     logger.error(err.stack);
 });
+
+module.exports = server;
