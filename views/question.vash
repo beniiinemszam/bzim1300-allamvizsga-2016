@@ -2,18 +2,18 @@
     @html.block('answers', function(model){
 		<div class="row">
 			<div class="col-md-6 col-sm-6">
-				<button id='@model.aid1' class="btn btn-default custom-type-buttons">@model.ans1</button>
+				<button id="bt1" value='@model.aid1' class="btn btn-default custom-type-buttons">@model.ans1</button>
 			</div>
 			<div class="col-md-6 col-sm-6">
-				<button id='@model.aid2' class="btn btn-default custom-type-buttons">@model.ans2</button>
+				<button id="bt2" value='@model.aid2' class="btn btn-default custom-type-buttons">@model.ans2</button>
 			</div>
 		</div><br>
 		<div class="row">
 			<div class="col-md-6 col-sm-6">
-				<button id='@model.aid3' class="btn btn-default custom-type-buttons">@model.ans3</button>
+				<button id="bt3" value='@model.aid3' class="btn btn-default custom-type-buttons">@model.ans3</button>
 			</div>
 			<div class="col-md-6 col-sm-6">
-				<button id='@model.aid4' class="btn btn-default custom-type-buttons">@model.ans4</button>
+				<button id="bt4" value='@model.aid4' class="btn btn-default custom-type-buttons">@model.ans4</button>
 			</div>
 		</div>
     });

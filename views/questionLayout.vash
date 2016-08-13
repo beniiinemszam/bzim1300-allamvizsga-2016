@@ -63,7 +63,7 @@
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
                     <div class="intro-text">
-                        <h2>@model.question</h2>
+                        <h2 id='question'>@model.question</h2>
 						<hr>
 						@html.block('answers')
                     </div>

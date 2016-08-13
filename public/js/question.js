@@ -1,6 +1,39 @@
+var finished = false;
+
+window.onload = function() {
+  var xhttp;
+  if(window.XMLHttpRequest){
+      xhttp = new XMLHttpRequest();
+  }
+  else{
+      xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xhttp.onreadystatechange = function(){
+    if (xhttp.readyState == 4 && xhttp.status == 200){
+      var myArr = JSON.parse(xhttp.responseText);
+
+      if(myArr.qnumber == 1){
+        setFinished();
+      }
+    }
+  };
+
+  xhttp.open("GET", '/getquestionnumber/' + document.getElementById('bt1').value, true);
+  xhttp.send();
+};
+
 $("button").click(function() {
-    post(this.id);
+    if(!finished){
+      newQuestion(this.value);
+    }
+    else{
+      post(this.value);
+    }
 });
+
+function setFinished(){
+  finished = true;
+}
 
 function post(param) {
     var method  = "post";
@@ -12,7 +45,7 @@ function post(param) {
 
     var field = document.createElement("input");
     field.setAttribute("type", "hidden");
-    field.setAttribute("name", "ansID");
+    field.setAttribute("name", "aid");
     field.setAttribute("value", param);
 
     form.appendChild(field);
@@ -21,19 +54,36 @@ function post(param) {
     form.submit();
 }
 
-/*function newQuestion(id){
+function newQuestion(id){
     var path = window.location.pathname;
-    $.ajax({
-      type: 'POST',
-      url: '/quiz/'+path,
-      data: id
-    })
-    .done(function (data) {
-      // clear form
-      $('input[name=name]').val('');
-      $('input[name=age]').val('')
+    var xhttp;
+    if(window.XMLHttpRequest){
+        xhttp = new XMLHttpRequest();
+    }
+    else{
+        xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xhttp.onreadystatechange = function(){
+      if (xhttp.readyState == 4 && xhttp.status == 200){
+        var myArr = JSON.parse(xhttp.responseText);
 
+        document.getElementById('question').innerText = myArr.question;
+        document.getElementById('bt1').innerText      = myArr.ans1;
+        document.getElementById('bt2').innerText      = myArr.ans2;
+        document.getElementById('bt3').innerText      = myArr.ans3;
+        document.getElementById('bt4').innerText      = myArr.ans4;
+        document.getElementById('bt1').value = myArr.aid1;
+        document.getElementById('bt2').value = myArr.aid2;
+        document.getElementById('bt3').value = myArr.aid3;
+        document.getElementById('bt4').value = myArr.aid4;
 
-      alert(data);
-    });
-}*/
+        if(myArr.qtn == myArr.qn + 1){
+          setFinished();
+        }
+      }
+    };
+
+    xhttp.open("POST", path, true);
+    xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhttp.send(JSON.stringify({aid: id}));
+}

@@ -6,8 +6,8 @@ var should 		= chai.should();
 chai.use(chaiHttp);
 
 describe('requestMechanism', function(done) {
-	//var url	= "http://0.0.0.0:8081";
-	var url	= "http://http://bzim1300-allamvizsga-2016.herokuapp.com/";
+	var url	= "http://0.0.0.0:8081";
+	// var url	= "http://http://bzim1300-allamvizsga-2016.herokuapp.com/";
 	it('bad request path returns status code 404', function(done) {
 		chai.request(server)
 	    .get('/wrge')

@@ -39,7 +39,7 @@ var self = module.exports = {
             }
             else{
     				  exist = true;
-              logger.info("%s loged in!", username, {admin: admin});
+              logger.info("%s loged in!", username, {editor: admin});
             }
     			},
     			onCompleted: function(){
@@ -315,6 +315,7 @@ var self = module.exports = {
     }
   },
   isCorrect: function(id, callback){
+    logger.debug(id);
     try{
       var session = driver.session();
       session
@@ -398,6 +399,34 @@ var self = module.exports = {
             return callback(new Error("Internal server error."));
         });
     } catch(err){
+      return callback(new Error("Internal server error."));
+    }
+  },
+  getQuestionTypeByAnswer: function(id, callback){
+    try{
+      var session = driver.session();
+      session
+        .run("Match (t:Type)<-[:TypeOfQuestion]-(:Question)<-[:answer]-(:Answer{id: {aid}}) return t.name as name, t.questionNumber as questionNumber, t.description as description",{aid: neo4j.int(id)})
+        .then(function (result) {
+          var records = [];
+          for (i = 0; i < result.records.length; i++) {
+            records.push(result.records[i]);
+          }
+          return records;
+        })
+        .then(function (records) {
+          session.close();
+          var type;
+          var type = new QuestionType(records[0].get("name"), records[0].get("questionNumber"), records[0].get("description"));
+          callback(null, type);
+        })
+        .catch(function(error){
+            logger.error('Error in neo4jConnection-getQuestionTypeByAnswer: ', error.stack);
+            session.close();
+            return callback(new Error("sdfrInternal server error."));
+        });
+    }
+    catch(err){
       return callback(new Error("Internal server error."));
     }
   }

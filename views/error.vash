@@ -3,5 +3,5 @@
         <h3>Error code: @model.code</h3>
 		<h1>@model.message</h1>
 		<hr>
-    });
-});
+    })
+})

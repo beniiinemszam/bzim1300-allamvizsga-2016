@@ -15,8 +15,8 @@ describe('databaseTest', function(done) {
 	});
 
 	it('getQuestionType with test44 parameter will return test44', function(done) {
-		neo4j.getQuestionType('testtype', function(err, data){
-			expect(parseInt(data.getQuestionNumber())).to.equal(1);
+		neo4j.getQuestionType('test44', function(err, data){
+			expect(parseInt(data.getQuestionNumber())).to.equal(2);
 			done();
 		});
 	});

@@ -222,3 +222,162 @@
 {"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:13:28.944Z"}
 {"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:14:09.048Z"}
 {"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:16:32.602Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:50:25.011Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:51:23.840Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:51:45.804Z"}
+{"level":"info","message":"on error handler","timestamp":"2016-08-12T14:51:54.633Z"}
+{"level":"info","message":"Error: listen EADDRINUSE\n    at errnoException (net.js:901:11)\n    at Server._listen2 (net.js:1039:14)\n    at listen (net.js:1061:10)\n    at Server.listen (net.js:1135:5)\n    at EventEmitter.listen (/home/beniii/tanulni/allamvizsga/node_modules/express/lib/application.js:617:24)\n    at Object.<anonymous> (/home/beniii/tanulni/allamvizsga/server.js:702:18)\n    at Module._compile (module.js:456:26)\n    at Object.Module._extensions..js (module.js:474:10)\n    at Module.load (module.js:356:32)\n    at Function.Module._load (module.js:312:12)\n    at Module.require (module.js:364:17)\n    at require (module.js:380:17)\n    at Object.<anonymous> (/home/beniii/tanulni/allamvizsga/test/serverTest.js:3:16)\n    at Module._compile (module.js:456:26)\n    at Object.Module._extensions..js (module.js:474:10)\n    at Module.load (module.js:356:32)\n    at Function.Module._load (module.js:312:12)\n    at Module.require (module.js:364:17)\n    at require (module.js:380:17)\n    at /home/beniii/tanulni/allamvizsga/node_modules/mocha/lib/mocha.js:220:27\n    at Array.forEach (native)\n    at Mocha.loadFiles (/home/beniii/tanulni/allamvizsga/node_modules/mocha/lib/mocha.js:217:14)\n    at Mocha.run (/home/beniii/tanulni/allamvizsga/node_modules/mocha/lib/mocha.js:485:10)\n    at Object.<anonymous> (/home/beniii/tanulni/allamvizsga/node_modules/mocha/bin/_mocha:403:18)\n    at Module._compile (module.js:456:26)\n    at Object.Module._extensions..js (module.js:474:10)\n    at Module.load (module.js:356:32)\n    at Function.Module._load (module.js:312:12)\n    at Function.Module.runMain (module.js:497:10)\n    at startup (node.js:119:16)\n    at node.js:902:3","timestamp":"2016-08-12T14:51:54.636Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:45875","timestamp":"2016-08-12T14:51:54.650Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:52:04.972Z"}
+{"level":"info","message":"on error handler","timestamp":"2016-08-12T14:52:06.965Z"}
+{"level":"info","message":"Error: listen EADDRINUSE\n    at errnoException (net.js:901:11)\n    at Server._listen2 (net.js:1039:14)\n    at listen (net.js:1061:10)\n    at Server.listen (net.js:1135:5)\n    at EventEmitter.listen (/home/beniii/tanulni/allamvizsga/node_modules/express/lib/application.js:617:24)\n    at Object.<anonymous> (/home/beniii/tanulni/allamvizsga/server.js:702:18)\n    at Module._compile (module.js:456:26)\n    at Object.Module._extensions..js (module.js:474:10)\n    at Module.load (module.js:356:32)\n    at Function.Module._load (module.js:312:12)\n    at Module.require (module.js:364:17)\n    at require (module.js:380:17)\n    at Object.<anonymous> (/home/beniii/tanulni/allamvizsga/test/serverTest.js:3:16)\n    at Module._compile (module.js:456:26)\n    at Object.Module._extensions..js (module.js:474:10)\n    at Module.load (module.js:356:32)\n    at Function.Module._load (module.js:312:12)\n    at Module.require (module.js:364:17)\n    at require (module.js:380:17)\n    at /home/beniii/tanulni/allamvizsga/node_modules/mocha/lib/mocha.js:220:27\n    at Array.forEach (native)\n    at Mocha.loadFiles (/home/beniii/tanulni/allamvizsga/node_modules/mocha/lib/mocha.js:217:14)\n    at Mocha.run (/home/beniii/tanulni/allamvizsga/node_modules/mocha/lib/mocha.js:485:10)\n    at Object.<anonymous> (/home/beniii/tanulni/allamvizsga/node_modules/mocha/bin/_mocha:403:18)\n    at Module._compile (module.js:456:26)\n    at Object.Module._extensions..js (module.js:474:10)\n    at Module.load (module.js:356:32)\n    at Function.Module._load (module.js:312:12)\n    at Function.Module.runMain (module.js:497:10)\n    at startup (node.js:119:16)\n    at node.js:902:3","timestamp":"2016-08-12T14:52:06.968Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:40518","timestamp":"2016-08-12T14:52:06.983Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:52:31.744Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:52:33.333Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:52:55.001Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:52:57.031Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:53:01.366Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:53:06.910Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:54:35.720Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-12T14:55:12.757Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:03:38.898Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:07:06.927Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:07:53.725Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:08:57.627Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:10:07.848Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T07:10:26.791Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:11:34.687Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:12:19.547Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T07:12:30.473Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:13:49.920Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:13:54.909Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T07:14:04.614Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:14:49.025Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T07:15:02.214Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:15:22.658Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T07:15:32.270Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:27:57.951Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T07:28:09.004Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:28:26.848Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T07:28:36.056Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:29:16.969Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T07:29:43.453Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:33:49.759Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T07:34:08.793Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:34:34.244Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T07:34:42.356Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:47:08.510Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T07:47:18.188Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:49:59.609Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:54:47.038Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T07:54:56.484Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:55:36.468Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T07:55:45.524Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T07:58:48.391Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:01:15.206Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:02:55.198Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:03:58.496Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:04:19.730Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T08:04:28.108Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:05:07.387Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T08:05:15.351Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:05:43.373Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T08:05:52.073Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:08:55.114Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T08:09:10.129Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:10:24.722Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:10:36.504Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:12:01.736Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T08:12:10.175Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:12:47.275Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T08:12:56.172Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:24:06.049Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:25:08.482Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:31:44.712Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:32:21.497Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T08:32:34.190Z"}
+{"level":"error","message":"Error in neo4jConnection-getQuestion:  TypeError: Object #<Question> has no method 'getQuestionNumber'\n    at sendQuestion (/home/beniii/tanulni/allamvizsga/server.js:165:16)\n    at /home/beniii/tanulni/allamvizsga/server.js:379:6\n    at shuffle (/home/beniii/tanulni/allamvizsga/server.js:149:5)\n    at /home/beniii/tanulni/allamvizsga/server.js:375:5\n    at nextTask (/home/beniii/tanulni/allamvizsga/node_modules/async/dist/async.js:5021:18)\n    at /home/beniii/tanulni/allamvizsga/node_modules/async/dist/async.js:5015:17\n    at /home/beniii/tanulni/allamvizsga/node_modules/async/dist/async.js:339:31\n    at /home/beniii/tanulni/allamvizsga/node_modules/async/dist/async.js:847:20\n    at /home/beniii/tanulni/allamvizsga/server.js:367:7\n    at /home/beniii/tanulni/allamvizsga/services/neo4jConnection.js:393:18","timestamp":"2016-08-13T08:32:37.013Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:35:37.167Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T08:35:47.237Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:36:09.903Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T08:36:17.447Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:36:59.795Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:37:33.416Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T08:37:45.579Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:47:54.195Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:49:43.236Z"}
+{"admin":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T08:49:53.573Z"}
+{"admin":true,"level":"info","message":"asd loged in!","timestamp":"2016-08-13T08:56:06.549Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T08:58:07.380Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T08:58:38.117Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T09:01:32.648Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T09:01:44.973Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T09:02:20.380Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T09:02:29.633Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T09:03:55.861Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T09:04:32.811Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T09:04:42.609Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T09:11:37.695Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T09:12:14.833Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T09:22:05.147Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T09:22:19.519Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:16:06.727Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:17:49.220Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:23:19.758Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:23:58.899Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T11:24:09.812Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:25:53.755Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T11:26:03.070Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:37:18.308Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:37:49.943Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T11:37:58.772Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:44:14.115Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:47:25.852Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T11:47:40.415Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:48:39.770Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:48:45.770Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T11:48:54.754Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:51:20.835Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T11:51:28.943Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:55:08.275Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T11:55:21.891Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:56:54.326Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:57:13.375Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:58:27.073Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:58:33.873Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:59:00.895Z"}
+{"level":"error","message":"Error in neo4jConnection-getQuestionTypeByAnswer:  TypeError: Cannot call method 'get' of undefined\n    at /home/beniii/tanulni/allamvizsga/services/neo4jConnection.js:418:50\n    at lib$es6$promise$$internal$$tryCatch (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:338:14)\n    at lib$es6$promise$$internal$$invokeCallback (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:353:15)\n    at lib$es6$promise$$internal$$publish (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:321:9)\n    at lib$es6$promise$asap$$flush (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:120:7)\n    at process._tickCallback (node.js:415:13)","timestamp":"2016-08-13T11:59:02.155Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:59:08.968Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:59:18.370Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:59:20.080Z"}
+{"level":"error","message":"Error in neo4jConnection-getQuestionTypeByAnswer:  TypeError: Cannot call method 'get' of undefined\n    at /home/beniii/tanulni/allamvizsga/services/neo4jConnection.js:418:50\n    at lib$es6$promise$$internal$$tryCatch (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:338:14)\n    at lib$es6$promise$$internal$$invokeCallback (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:353:15)\n    at lib$es6$promise$$internal$$publish (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:321:9)\n    at lib$es6$promise$asap$$flush (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:120:7)\n    at process._tickCallback (node.js:415:13)","timestamp":"2016-08-13T11:59:22.255Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T11:59:58.816Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T12:00:00.309Z"}
+{"level":"error","message":"Error in neo4jConnection-getQuestionTypeByAnswer:  TypeError: Cannot call method 'get' of undefined\n    at /home/beniii/tanulni/allamvizsga/services/neo4jConnection.js:419:50\n    at lib$es6$promise$$internal$$tryCatch (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:338:14)\n    at lib$es6$promise$$internal$$invokeCallback (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:353:15)\n    at lib$es6$promise$$internal$$publish (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:321:9)\n    at lib$es6$promise$asap$$flush (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:120:7)\n    at process._tickCallback (node.js:415:13)","timestamp":"2016-08-13T12:00:01.698Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T12:00:28.087Z"}
+{"level":"error","message":"Error in neo4jConnection-getQuestionTypeByAnswer:  TypeError: Cannot call method 'get' of undefined\n    at /home/beniii/tanulni/allamvizsga/services/neo4jConnection.js:420:50\n    at lib$es6$promise$$internal$$tryCatch (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:338:14)\n    at lib$es6$promise$$internal$$invokeCallback (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:353:15)\n    at lib$es6$promise$$internal$$publish (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:321:9)\n    at lib$es6$promise$asap$$flush (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:120:7)\n    at process._tickCallback (node.js:415:13)","timestamp":"2016-08-13T12:00:30.355Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T12:02:39.960Z"}
+{"level":"error","message":"Error in neo4jConnection-getQuestionTypeByAnswer:  TypeError: Cannot call method 'get' of undefined\n    at /home/beniii/tanulni/allamvizsga/services/neo4jConnection.js:421:50\n    at lib$es6$promise$$internal$$tryCatch (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:338:14)\n    at lib$es6$promise$$internal$$invokeCallback (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:353:15)\n    at lib$es6$promise$$internal$$publish (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:321:9)\n    at lib$es6$promise$asap$$flush (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:120:7)\n    at process._tickCallback (node.js:415:13)","timestamp":"2016-08-13T12:02:43.059Z"}
+{"level":"error","message":"Error in neo4jConnection-getQuestionTypeByAnswer:  TypeError: Cannot call method 'get' of undefined\n    at /home/beniii/tanulni/allamvizsga/services/neo4jConnection.js:421:50\n    at lib$es6$promise$$internal$$tryCatch (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:338:14)\n    at lib$es6$promise$$internal$$invokeCallback (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:353:15)\n    at lib$es6$promise$$internal$$publish (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:321:9)\n    at lib$es6$promise$asap$$flush (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:120:7)\n    at process._tickCallback (node.js:415:13)","timestamp":"2016-08-13T12:54:43.111Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T12:58:17.076Z"}
+{"level":"error","message":"Error in neo4jConnection-getQuestionTypeByAnswer:  ReferenceError: type is not defined\n    at /home/beniii/tanulni/allamvizsga/services/neo4jConnection.js:422:26\n    at lib$es6$promise$$internal$$tryCatch (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:338:14)\n    at lib$es6$promise$$internal$$invokeCallback (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:353:15)\n    at lib$es6$promise$$internal$$publish (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:321:9)\n    at lib$es6$promise$asap$$flush (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:120:7)\n    at process._tickCallback (node.js:415:13)","timestamp":"2016-08-13T12:58:20.194Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T12:58:41.980Z"}
+{"level":"error","message":"Error in neo4jConnection-getQuestionTypeByAnswer:  TypeError: Cannot call method 'getQuestionNumber' of undefined\n    at /home/beniii/tanulni/allamvizsga/server.js:756:18\n    at /home/beniii/tanulni/allamvizsga/services/neo4jConnection.js:423:11\n    at lib$es6$promise$$internal$$tryCatch (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:338:14)\n    at lib$es6$promise$$internal$$invokeCallback (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:353:15)\n    at lib$es6$promise$$internal$$publish (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:321:9)\n    at lib$es6$promise$asap$$flush (/home/beniii/tanulni/allamvizsga/node_modules/neo4j-driver/lib/external/es6-promise.js:120:7)\n    at process._tickCallback (node.js:415:13)","timestamp":"2016-08-13T12:58:46.139Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T12:59:39.601Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T13:01:23.446Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T13:01:26.047Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T13:01:34.503Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T13:01:54.638Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T13:02:23.244Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T13:02:39.007Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T13:02:48.581Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T13:03:29.022Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T13:03:49.260Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T13:07:04.394Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T13:07:19.147Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T13:08:53.505Z"}
+{"editor":false,"level":"info","message":"beniii loged in!","timestamp":"2016-08-13T13:09:05.898Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T13:11:23.233Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T13:14:00.943Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T13:14:10.925Z"}
+{"level":"info","message":"Server listening at http://0.0.0.0:8081","timestamp":"2016-08-13T13:23:48.801Z"}

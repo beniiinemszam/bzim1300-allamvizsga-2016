@@ -1,4 +1,5 @@
 var express 		= require('express');
+var compression 	= require('compression');
 var path    		= require("path");
 var url 			= require("url");
 var async 			= require("async");
@@ -18,6 +19,7 @@ var app 			= express();
 app.set('view engine', 'vash');
 app.disable('view cache');
 
+app.use(compression());
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -147,8 +149,8 @@ function shuffle(array, callback) {
     callback(null, array);
 }
 
-function sendQuestion(res, array, data){
-	logger.debug(array[0]);
+function sendQuestion(res, array, data, correctNumber, questionNumber, questionTypeNumber){
+	logger.debug('send');
 	res.render('question',
 	{
 		question: 	data.getQuestion(),
@@ -156,12 +158,34 @@ function sendQuestion(res, array, data){
 		ans2: 		array[1].getName(),
 		ans3: 		array[2].getName(),
 		ans4: 		array[3].getName(),
-		qid: 		data.getID(),
 		aid1: 		array[0].getID(),
 		aid2: 		array[1].getID(),
 		aid3: 		array[2].getID(),
-		aid4: 		array[3].getID()
+		aid4: 		array[3].getID(),
+		qtn:  		questionTypeNumber,
+		cn: 		correctNumber,
+		qn: 		questionNumber
 	});
+	
+}
+
+function sendNewQuestion(res, array, data, correctNumber, questionNumber, questionTypeNumber){
+	logger.debug('sendnew');
+	res.json({
+		question: 	data.getQuestion(),
+		ans1: 		array[0].getName(),
+		ans2: 		array[1].getName(),
+		ans3: 		array[2].getName(),
+		ans4: 		array[3].getName(),
+		aid1: 		array[0].getID(),
+		aid2: 		array[1].getID(),
+		aid3: 		array[2].getID(),
+		aid4: 		array[3].getID(),
+		qtn:  		questionTypeNumber,
+		cn: 		correctNumber,
+		qn: 		questionNumber
+	});
+	res.end();
 }
 
 function deleteSession(req){
@@ -263,6 +287,7 @@ app.get("/types", checkAuth, function(req, res){
 		}
 		else{
 			renderError(res, 'error', err.message, 500);
+			return;
 		}
 	});
 });
@@ -280,6 +305,7 @@ app.get("/description/:type", checkAuth, function(req, res){
 		}
 		else{
 			renderError(res, 'error', err.message, 500);
+			return;
 		}
 	});
 });
@@ -306,6 +332,7 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 					}
 					else{
 						renderError(res, 'error', err.message, 500);
+						return;
 					}
 				});
 			},
@@ -318,6 +345,7 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 					}
 					else{
 						renderError(res, 'error', err.message, 500);
+						return;
 					}
 				});
 			},
@@ -325,12 +353,12 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 				shuffle(result, function(err, array){
 					if(err!=null){
 						renderError(res, 'error', err.message, 500);
+						return;
 					}
 					callback(null, qtn, array);
 				});
 			},
 			function(qtn, result, callback){
-				logger.debug('1');
 				if(result.length > qtn){
 					result.length = qtn;
 				}
@@ -345,26 +373,28 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 					}
 					else{
 						renderError(res, 'error', err.message, 500);
+						return;
 					}
 				});
 			},
 			function(data, array, callback){
-				logger.debug('2');
 				shuffle(array, function(err, array2){
 					if(err!=null){
 						renderError(res, 'error', err.message, 500);
+						return;
 					}
-					sendQuestion(res, array2, data);
+					sendQuestion(res, array2, data, sess.userpoint, sess.qnumber, sess.qtnumber);
 				});
 			}
 		],function(err){
 			console.log(err);
 			renderError(res, 'error', err.message, 500);
+			return;
 		});
 		return;
 	}
 	
-	var ansID = req.body.ansID;
+	var ansID = req.body.aid;
 	if (ansID==null){
 		async.waterfall([
 			function(callback){
@@ -377,6 +407,7 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 					}
 					else{
 						renderError(res, 'error', err.message, 500);
+						return;
 					}
 
 				});
@@ -390,6 +421,7 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 					}
 					else{
 						renderError(res, 'error', err.message, 500);
+						return;
 					}
 				});
 			},
@@ -397,6 +429,7 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 				shuffle(result, function(err, array){
 					if(err!=null){
 						renderError(res, 'error', err.message, 500);
+						return;
 					}
 					callback(null, qtn, array);
 				});
@@ -416,6 +449,7 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 					}
 					else{
 						renderError(res, 'error', err.message, 500);
+						return;
 					}
 				});
 			},
@@ -423,13 +457,15 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 				shuffle(array, function(err, array2){
 					if(err!=null){
 						renderError(res, 'error', err.message, 500);
+						return;
 					}
-					sendQuestion(res, array2, data);
+					sendQuestion(res, array2, data, sess.userpoint, sess.qnumber, sess.qtnumber);
 				});
 			}
 		],function(err){
 			console.log(err);
 			renderError(res, 'error', err.message, 500);
+			return;
 		});
 		return;
 	}
@@ -437,16 +473,18 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 	async.waterfall([
 		function(callback){
 			neo4j.isCorrect(ansID, function(err, correct){
-				if(err==null){
-					sess.userpoint = point + 1;
-				}
-				else{
+				if(err!=null){
 					renderError(res, 'error', err, 404);
+					return;
+				}
+				if(err==null && correct){
+					sess.userpoint = point + 1;
+					logger.debug('correct');
 				}
 				qn 				= qn + 1;
 				sess.qnumber 	= qn;
 
-				if(qtn == qn){
+				if(qtn <= qn){
 					var params 			= {};
 					var userpoint		= sess.userpoint;
 					var qnumber 		= sess.qnumber;
@@ -461,7 +499,7 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 					});
 				}
 				else{
-					callback(null,"newquestion");
+					callback(null, "newquestion");
 				}
 			});
 		},
@@ -473,6 +511,7 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 				}
 				else{
 					renderError(res, 'error', err.message, 500);
+					return;
 				}
 			});
 		},
@@ -480,13 +519,15 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 			shuffle(array, function(err, array2){
 				if(err!=null){
 					renderError(res, 'error', err.message, 500);
+					return;
 				}
-				sendQuestion(res, array2, data);
+				sendNewQuestion(res, array2, data, sess.userpoint, sess.qnumber, sess.qtnumber);
 			});
 		}
 	],function(err){
 		console.log(err);
 		renderError(res, 'error', err.message, 500);
+		return;
 	});
 });
 
@@ -514,12 +555,14 @@ app.post("/authenticateAdmin",function(req, res){
 			neo4j.authenticateUser(username, pass, true, function(err, success){
 				if(err){
 					renderError(res, 'error', err.message, 500);
+					return;
 				}
 				if(success){
 					callback(null, success);
 				}
 				else{
-					renderError(res, 'error', err.message, 500);
+					renderError(res, 'error', "Wrong username or password!", 403);
+					return;
 				}
 			});
 		},
@@ -545,10 +588,12 @@ app.post("/authenticateAdmin",function(req, res){
 			}
 			else{
 				renderError(res, 'adminLogin', 'Wrong username or password!', 403);
+				return;
 			}
 		}
 	], function(err){
 		renderError(res, 'error', err.message, 500);
+		return;
 	});
 });
 
@@ -560,6 +605,7 @@ app.get("/addeditor", checkAuthAdmin, function(req, res){
 	}
 	else{
 		renderError(res, 'error', "You don't have permission to view this page!", 403);
+		return;
 	}
 });
 
@@ -582,6 +628,7 @@ app.post("/tryneweditor", checkAuthAdmin, function(req, res){
 		}
 		else{
 			renderError(res, 'neweditor', err.message, 403);
+			return;
 		}
 	})
 });
@@ -612,6 +659,7 @@ app.post("/trynewtype", checkAuthAdmin, function(req, res){
 		}
 		else{
 			renderError(res, 'error', err.message, 500);
+			return;
 		}
 	});
 });
@@ -626,6 +674,7 @@ app.get("/newquestion", checkAuthAdmin, function(req, res){
 		}
 		else{
 			renderError(res, 'error', err.message, 500);
+			return;
 		}
 	})
 });
@@ -689,12 +738,44 @@ app.post("/trynewquestion", checkAuthAdmin, function(req, res){
 		}
 		else{
 			renderError(res, 'error', err.message, 500);
+			return;
 		}
 	})
 });
 
+app.get('/getquestionnumber/:id',function(req, res){
+	var id = req.params.id;
+	neo4j.getQuestionTypeByAnswer(id, function(err, data){
+		if(err){
+			renderError(res, 'error', err.message, 500);
+			return;
+		}
+		res.json({
+			qnumber: data.getQuestionNumber()
+		});
+		res.end();
+	});
+});
+
+app.post('/test', function(req, res){
+	var aid = req.body.aid;
+	res.json({
+		question	: 'asd ' + aid,
+		a1			: 'a1',
+		a2			: 'a2',
+		a3			: 'a3',
+		a4			: 'a4',
+		aid1		: 'aid1 ' + aid,
+		aid2		: 'aid2 ' + aid,
+		aid3		: 'aid3 ' + aid,
+		aid4		: 'aid4 ' + aid,
+	});
+	res.end();
+});
+
 app.use(function(req, res){
 	renderError(res, 'error', 'Not Found!', 404);
+	return;
 });
 
 var server = app.listen(process.env.PORT || 8081 ,function(){
