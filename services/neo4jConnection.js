@@ -315,7 +315,6 @@ var self = module.exports = {
     }
   },
   isCorrect: function(id, callback){
-    logger.debug(id);
     try{
       var session = driver.session();
       session
