@@ -65,7 +65,7 @@
                     <div class="intro-text">
                     	<h2>New Question</h2>
                     	<hr>
-                        <form action='/trynewquestion' method='post'>
+                        <form action='/newquestion' method='post'>
                         	<h4 class='question-header'>Type of question</h4>
 							@html.block('types')
 							<h4 class='question-header'>Question</h4>

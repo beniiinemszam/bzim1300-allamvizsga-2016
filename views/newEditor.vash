@@ -1,7 +1,7 @@
 @html.extend('newEditorLayout', function(model){
     @html.block('error', function(model){
     	@if(model.message){
-	    	<div class="row">
+	    	<div class="row errorMessage">
 				<div class="col-md-offset-1 col-md-10 col-sm-10 alert alert-danger fade in">
 					<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 					<h3 id='form-error-msg'>@model.message</h3>		

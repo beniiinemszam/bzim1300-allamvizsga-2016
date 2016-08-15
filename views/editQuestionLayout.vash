@@ -19,7 +19,7 @@
     <link href="/css/login-signup-form.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 
@@ -60,23 +60,33 @@
     <!-- Header -->
     <header>
         <div class="container">
-            <div class="row description-row">
-                <div class="col-md-6">
-                    @{
-                        var increased = model.qn + 1;
-                    }
-                    <h4 id="question-number">question: @model.qtn / @increased</h4>
-                </div>
-                <div class="col-md-6">
-                    <h4 id="question-correct">correct: @model.cn</h4>
-                </div>
-            </div>
             <div class="row">
-                <div class="col-md-offset-3 col-md-6">
+                <div class="col-md-offset-4 col-md-4">
                     <div class="intro-text">
-                        <h2 id='question'>@model.question</h2>
-						<hr>
-						@html.block('answers')
+                    	<h2>New Question</h2>
+                    	<hr>
+                        <form id='editQuestionForm' action="javascript:void(0);">
+                        	<h4 class='question-header'>Type of question</h4>
+							@html.block('types')
+							<h4 class='question-header'>Question</h4>
+							@html.block('questions')
+                            @html.block('ids')
+							<h4 class='question-header'>Correct answer</h4>
+							<input id ='canswer' type='text' name='canswer' require placeholder='&#xf00c; Correct answer'><br>
+							<h4 class='question-header'>Wrong answer</h4>
+							<input id ='wanswer1' type='text' name='wanswer1' require placeholder='&#xf00d; Wrong answer nr. 1'><br>
+							<input id ='wanswer2' type='text' name='wanswer2' require placeholder='&#xf00d; Wrong answer nr. 2'><br>
+							<input id ='wanswer3' type='text' name='wanswer3' require placeholder='&#xf00d; Wrong answer nr. 3'><br><br>
+                            <input id ='squestion' type='text' name='squestion' hidden>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button onclick="deleteType()" class="btn btn-danger custom-login-buttons editType">Delete</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button onclick="saveChanges()" class="btn btn-default custom-login-buttons editType">Save</button>
+                                </div>
+                            </div>
+						</form>
                     </div>
                 </div>
             </div>
@@ -157,7 +167,7 @@
     <script src="/js/freelancer.min.js"></script>
 
     <!-- Custom JavaScript -->
-    <script src="/js/question.js"></script>
+    <script src="/js/edit_question.js"></script>
 
 </body>
 

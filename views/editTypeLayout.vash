@@ -19,7 +19,7 @@
     <link href="/css/login-signup-form.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 
@@ -60,23 +60,24 @@
     <!-- Header -->
     <header>
         <div class="container">
-            <div class="row description-row">
-                <div class="col-md-6">
-                    @{
-                        var increased = model.qn + 1;
-                    }
-                    <h4 id="question-number">question: @model.qtn / @increased</h4>
-                </div>
-                <div class="col-md-6">
-                    <h4 id="question-correct">correct: @model.cn</h4>
-                </div>
-            </div>
             <div class="row">
-                <div class="col-md-offset-3 col-md-6">
+                <div class="col-md-offset-4 col-md-4">
                     <div class="intro-text">
-                        <h2 id='question'>@model.question</h2>
-						<hr>
-						@html.block('answers')
+                        <h2>Edit Type</h2>
+                        <hr>
+                        <form id='editTypeForm' action="javascript:void(0);">
+                            @html.block('list')
+							<input id='number' type='number' name='number' min='1' max='50' placeholder="&#xf162;  Question number"><br><br>
+                            <textarea id='description' name="description" cols="40" rows="5" placeholder='&#xf129; Descriptiom'></textarea><br><br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button onclick="deleteType()" class="btn btn-danger custom-login-buttons editType">Delete</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button onclick="saveChanges()" class="btn btn-default custom-login-buttons editType">Save</button>
+                                </div>
+                            </div>
+						</form>
                     </div>
                 </div>
             </div>
@@ -157,7 +158,7 @@
     <script src="/js/freelancer.min.js"></script>
 
     <!-- Custom JavaScript -->
-    <script src="/js/question.js"></script>
+    <script src="/js/edit_type.js"></script>
 
 </body>
 

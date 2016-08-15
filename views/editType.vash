@@ -1,0 +1,10 @@
+@html.extend('editTypeLayout', function(model){
+    @html.block('list', function(model){
+    	<select id='edittype' name='type' onChange="getInformation(); required">
+	    	<option disabled selected value> Select a type </option>
+	    	@model.data.forEach(function(item){
+	    		<option value='@item'>@item</option>
+	    	})
+    	</select><br><br>
+    })
+})

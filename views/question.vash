@@ -1,19 +1,19 @@
 @html.extend('questionLayout', function(model){
     @html.block('answers', function(model){
 		<div class="row">
-			<div class="col-md-6 col-sm-6">
-				<button id="bt1" value='@model.aid1' class="btn btn-default custom-type-buttons">@model.ans1</button>
+			<div class="col-md-6 col-sm-6 list">
+				<button id="bt1" value='@model.aid1' class="btn btn-default custom-question-buttons"><span>@model.ans1</span></button>
 			</div>
-			<div class="col-md-6 col-sm-6">
-				<button id="bt2" value='@model.aid2' class="btn btn-default custom-type-buttons">@model.ans2</button>
+			<div class="col-md-6 col-sm-6 list">
+				<button id="bt2" value='@model.aid2' class="btn btn-default custom-question-buttons"><span>@model.ans2</span></button>
 			</div>
-		</div><br>
+		</div>
 		<div class="row">
-			<div class="col-md-6 col-sm-6">
-				<button id="bt3" value='@model.aid3' class="btn btn-default custom-type-buttons">@model.ans3</button>
+			<div class="col-md-6 col-sm-6 list">
+				<button id="bt3" value='@model.aid3' class="btn btn-default custom-question-buttons"><span>@model.ans3</span></button>
 			</div>
-			<div class="col-md-6 col-sm-6">
-				<button id="bt4" value='@model.aid4' class="btn btn-default custom-type-buttons">@model.ans4</button>
+			<div class="col-md-6 col-sm-6 list">
+				<button id="bt4" value='@model.aid4' class="btn btn-default custom-question-buttons"><span>@model.ans4</span></button>
 			</div>
 		</div>
     });

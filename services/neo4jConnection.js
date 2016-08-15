@@ -5,7 +5,7 @@ var QuestionType  = require(path.join(__dirname + "/../models/QuestionType"));
 var Question      = require(path.join(__dirname + "/../models/Question"));
 var Answer        = require(path.join(__dirname + "/../models/Answer"));
 
-// var driver        = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "neo4jpassword"));
+//var driver        = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "neo4jpassword"));
 
 var graphenedbURL   = process.env.GRAPHENEDB_BOLT_URL;
 var graphenedbUser  = process.env.GRAPHENEDB_BOLT_USER;
@@ -90,15 +90,16 @@ var self = module.exports = {
     try{
       var session = driver.session();
       var succes  = false;
-      self.isExist("", email, function(exist){
+      self.isExist("", email, function(err, exist){
+        if(err){
+          return callback(err);
+        }
         if(exist){
           session
             .run("Match(p:Person) where p.email={emailpar} set p.editor = true return p.name",{emailpar: email})
             .then(function(record){
-              if(result.records.length >= 0){
-                succes = true;
-                logger.info("%s is a new editor!", email);
-              }
+              succes = true;
+              logger.info("%s is a new editor!", email);
               session.close();
               return callback(null, succes);
             })
@@ -109,7 +110,7 @@ var self = module.exports = {
             });
         }
         else{
-          return callback(new Error("Internal server error."));
+           return callback(null, false);
         }
       });
     } catch(err){
@@ -196,6 +197,54 @@ var self = module.exports = {
       return callback(new Error("Internal server error."));
     }
   },
+  getQuestionAnswers: function(question, callback){
+    try{
+      var session = driver.session();
+      var data = [];
+      session
+        .run("match (q:Question{id: {qid}})<-[ar:answer]-(a:Answer) return a.name as name a.id as id, ar.isCorrect as correct")
+        .subscribe({
+          onNext: function(record){
+            data.push(new Answer(record.get('name'), record.get('correct'), record.get('id')));
+          },
+          onCompleted: function(){
+            session.close();
+            return callback(null, data);
+          },
+          onError: function(error){
+            session.close();
+            logger.error('Error in neo4jConnection-getQuestionAnswers: ', error.stack);
+            return callback(new Error("Internal server error."));
+          }
+        });
+    } catch(err){
+      return callback(new Error("Internal server error."));
+    }
+  },
+  getQuestionNames: function(callback){
+    try{
+      var session = driver.session();
+      var data = {};
+      session
+        .run("match (q:Question) return q.question as question, q.id as id")
+        .subscribe({
+          onNext: function(record){
+            data[record.get("id")] = record.get("question");
+          },
+          onCompleted: function(){
+            session.close();
+            return callback(null, data);
+          },
+          onError: function(error){
+            session.close();
+            logger.error('Error in neo4jConnection-getQuestionName: ', error.stack);
+            return callback(new Error("Internal server error."));
+          }
+        });
+    } catch(err){
+      return callback(new Error("Internal server error."));
+    }
+  },
   getQuestionType: function(name, callback){
     try{
       var session = driver.session();
@@ -274,6 +323,16 @@ var self = module.exports = {
   },
   newQuestion: function(question, callback){
     try{
+      logger.debug(question.getCorrect().getName());
+      logger.debug(question.getQuestion());
+      logger.debug(question.getWrong1().getName());
+      logger.debug(question.getWrong2().getName());
+      logger.debug(question.getWrong3().getName());
+      logger.debug(question.getCorrect().getID());
+      logger.debug(question.getWrong1().getID());
+      logger.debug(question.getWrong2().getID());
+      logger.debug(question.getWrong3().getID());
+      logger.debug(question.getID());
       var session = driver.session();
       session
         .run('create  (a1:Answer{name: {canswer}, id: {aid1}})-[:answer{isCorrect: true}]->(q:Question{question: {question}, id: {qid}}), \
@@ -293,9 +352,11 @@ var self = module.exports = {
                 qid:      question.getID(),
               })
         .then(function(){
+          logger.debug("s1");
           return session.run('Match (q:Question{id:{qid}}), (t:Type{name: {name}}) create (q)-[:TypeOfQuestion]->(t)',{qid: question.getID(), name: question.getType()})
         })
         .then(function(result){
+          logger.debug("s2");
           session.close();
           if(result.records.length==0){
             return callback(null, false);
@@ -306,7 +367,7 @@ var self = module.exports = {
           }
         })
         .catch(function(error){
-          logger.error('Error in neo4jConnection-newQuestion: ', error.stack);
+          logger.error('Error in neo4jConnection-newQuestion: ', error.message);
           session.close();
           return callback(new Error("Internal server error."));
         });
@@ -360,12 +421,12 @@ var self = module.exports = {
       return callback(new Error("Internal server error."));
     }
   }, 
-  getQuestion: function(id, type, callback){
+  getQuestion: function(id, callback){
     try{
       var session = driver.session();
       session
-        .run('Match (q:Question{id:{parid}})<-[ar:answer]-(a:Answer) \
-          return q.id as qid, q.question as question, ar.isCorrect as correct, a.id as aid, a.name as answer limit 4',{tname: type, parid: id})
+        .run('Match (t:Type)<-[:TypeOfQuestion]-(q:Question{id:{parid}})<-[ar:answer]-(a:Answer) \
+          return q.id as qid, q.question as question, ar.isCorrect as correct, a.id as aid, a.name as answer, t.name as typename limit 4',{parid: neo4j.int(id)})
         .then(function (result) {
           var records = [];
           for (i = 0; i < result.records.length; i++) {
@@ -388,14 +449,14 @@ var self = module.exports = {
             }
           }
 
-          var question = new Question(records[0].get("question"), ans[0], ans[1], ans[2], ans[3], records[0].get("qid"), type);
+          var question = new Question(records[0].get("question"), ans[0], ans[1], ans[2], ans[3], records[0].get("qid"), records[0].get("typename"));
           session.close();
-          return callback(null, question);
+          callback(null, question);
         })
         .catch(function(error){
-            logger.error('Error in neo4jConnection-getQuestion: ', error.stack);
-            session.close();
-            return callback(new Error("Internal server error."));
+          logger.error('Error in neo4jConnection-getQuestion: ', error.stack);
+          session.close();
+          return callback(new Error("Internal server error."));
         });
     } catch(err){
       return callback(new Error("Internal server error."));
@@ -420,9 +481,93 @@ var self = module.exports = {
           callback(null, type);
         })
         .catch(function(error){
-            logger.error('Error in neo4jConnection-getQuestionTypeByAnswer: ', error.stack);
-            session.close();
-            return callback(new Error("sdfrInternal server error."));
+          logger.error('Error in neo4jConnection-getQuestionTypeByAnswer: ', error.stack);
+          session.close();
+          return callback(new Error("Internal server error."));
+        });
+    }
+    catch(err){
+      return callback(new Error("Internal server error."));
+    }
+  },
+  updateType: function(type, callback){
+    try{
+      var session = driver.session();
+      session
+        .run("match(t:Type{name:{tname}}) set t.description={tdescription} set t.questionNumber={tnumber}",
+        {
+          tname: type.getName(),
+          tnumber: type.getQuestionNumber(),
+          tdescription: type.getDescription()
+        })
+        .then(function (result) {
+          session.close();
+          callback(null, true);
+        })
+        .catch(function(error){
+          logger.error('Error in neo4jConnection-updateType: ', error.stack);
+          session.close();
+          return callback(new Error("Internal server error."));
+        });
+    }
+    catch(err){
+      return callback(new Error("Internal server error."));
+    }
+  },
+  deleteType: function(type, callback){
+    try{
+      var session = driver.session();
+      session
+        .run("match(t:Type{name:{tname}, description:{tdescription}, questionNumber: {tnumber}})<-[tq:TypeOfQuestion]-(q:Question)<-[a:answer]-(ans:Answer) \
+          delete a,ans,tq,q",
+        {
+          tname: type.getName(),
+          tnumber: type.getQuestionNumber(),
+          tdescription: type.getDescription()
+        })
+        .then(function (result) {
+          return session.run('match(t:Type{name:{tname}, description:{tdescription}, questionNumber: {tnumber}}) delete t',
+          {
+            tname: type.getName(),
+            tnumber: type.getQuestionNumber(),
+            tdescription: type.getDescription()
+          })
+        })
+        .then(function (){
+          callback(null, true);
+        })
+        .catch(function(error){
+          logger.error('Error in neo4jConnection-updateType: ', error.stack);
+          session.close();
+          return callback(new Error("Internal server error."));
+        });
+    }
+    catch(err){
+      return callback(new Error("Internal server error."));
+    }
+  },
+  deleteQuestion: function(id, callback){
+    try{
+      var session = driver.session();
+      session
+        .run("match (q:Question{id:{qid}})<-[a:answer]-(ans:Answer) \
+          delete a, ans",
+        {
+          qid: neo4j.int(id)
+        })
+        .then(function (result) {
+          return session.run('match (:Type)<-[tq:TypeOfQuestion]-(q:Question{id:{qid}}) delete tq, q',
+          {
+            qid: neo4j.int(id)
+          })
+        })
+        .then(function (){
+          callback(null, true);
+        })
+        .catch(function(error){
+          logger.error('Error in neo4jConnection-updateType: ', error.stack);
+          session.close();
+          return callback(new Error("Internal server error."));
         });
     }
     catch(err){

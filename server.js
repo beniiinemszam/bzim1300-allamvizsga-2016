@@ -51,7 +51,7 @@ function checkAuth(req, res, next){
 		return;
 	}
 
-	encoding.encode(username, '/authenticate', function(cb){
+	encoding.encode(username, '/login', function(cb){
 		if(sess.secretkey != cb){
 			renderError(res, 'error', "You don't have permission to view this page!", 403);
 			success = false;
@@ -76,7 +76,7 @@ function checkAuthAdmin(req, res, next){
 		return;
 	}
 
-	encoding.encode(username + "admin", "/authenticateAdmin", function(cb){
+	encoding.encode(username + "admin", "/admin", function(cb){
 		if(sess.secretadminkey != cb){
 			renderError(res, 'error', "You don't have permission to view this page!", 403);
 			success = false;
@@ -116,12 +116,6 @@ function redirect(res, url, params){
 	res.writeHead(301,
 	  {Location: url}
 	);
-	//res.send({ some: 'json' });
-	/*res.set({
-	  'Content-Type': 'text/plain',
-	  'Content-Length': '123',
-	  'ETag': '12345'
-	});*/
 	res.end();
 }
 
@@ -150,7 +144,6 @@ function shuffle(array, callback) {
 }
 
 function sendQuestion(res, array, data, correctNumber, questionNumber, questionTypeNumber){
-	logger.debug('send');
 	res.render('question',
 	{
 		question: 	data.getQuestion(),
@@ -170,7 +163,6 @@ function sendQuestion(res, array, data, correctNumber, questionNumber, questionT
 }
 
 function sendNewQuestion(res, array, data, correctNumber, questionNumber, questionTypeNumber){
-	logger.debug('sendnew');
 	res.json({
 		question: 	data.getQuestion(),
 		ans1: 		array[0].getName(),
@@ -197,6 +189,51 @@ function deleteSession(req){
 	sess.befques 		= null;
 	sess.secretadminkey = null;
 	sess.secretkey 		= null;
+}
+
+function generateID(callback){
+	var d 	= new Date();
+	async.waterfall([
+		function(callback){
+			addZero(d.getHours(), function(err, data){
+		    	if(err!=null){
+		    		return callback(err);
+		    	}
+		    	callback(null, data);
+		    });
+		},
+		function(h, callback){
+			addZero(d.getMinutes(), function(err, data){
+		    	if(err!=null){
+		    		return callback(err);
+		    	}
+		    	callback(null, h, data);
+		    });
+		},
+		function(h, m, callback){
+			addZero(d.getSeconds(), function(err, data){
+		    	if(err!=null){
+		    		return callback(err);
+		    	}
+		    	callback(null, h, m, data);
+		    });
+		},
+		function(h, m, s, callback){
+			addZero(d.getMilliseconds(), function(err, data){
+		    	if(err!=null){
+		    		return callback(err);
+		    	}
+		    	ms = data;
+		    	var id = (h*1000000 + m*10000 + s*100 + ms)*10;
+		    	callback(null, id);
+		    });
+		}
+	], function (err, result) {
+	    if(err!=null){
+    		return callback(err);
+    	}
+    	callback(null, result);
+	});
 }
 
 app.get("/", function(req, res){
@@ -227,7 +264,7 @@ app.get("/signup", function(req, res){
 	res.render('signup');
 });
 
-app.post("/trysignup", function(req, res){
+app.post("/signup", function(req, res){
 	username 	= req.body.username;
 	pass 		= req.body.password;
 	email 		= req.body.email;
@@ -243,7 +280,7 @@ app.post("/trysignup", function(req, res){
 			return;
 		}
 		if(success){
-			sessionNewPage(req, '/authenticate', username);
+			sessionNewPage(req, '/login', username);
 			redirect(res,'/types');
 		}
 		else{
@@ -252,7 +289,7 @@ app.post("/trysignup", function(req, res){
 	})
 });
 
-app.post("/authenticate", function(req, res){
+app.post("/login", function(req, res){
 	username 	= req.body.username;
 	pass 		= req.body.password;
 
@@ -267,7 +304,7 @@ app.post("/authenticate", function(req, res){
 			return;
 		}
 		if(success){
-			sessionNewPage(req, '/authenticate', username);
+			sessionNewPage(req, '/login', username);
 			redirect(res,'/types');
 		}
 		else{
@@ -292,6 +329,207 @@ app.get("/types", checkAuth, function(req, res){
 	});
 });
 
+app.get("/type/:typename", function(req, res){
+	res.setHeader('Cache-Control', 'no-cache');
+	neo4j.getQuestionType(req.params.typename, function(err, data){
+		if(err==null){
+			res.json({
+				descr: 	data.getDescription(),
+				type:	data.getName(),
+				number: parseInt(data.getQuestionNumber())
+			});
+		}
+		else{
+			res.json({
+				error: 	err.message
+			});
+		}
+	});
+});
+
+app.put("/type/:typename", function(req, res){
+	var sess 		= req.session;
+	var typename 	= req.body.type;
+	var qnumber 	= req.body.number;
+	var descr 		= req.body.description;	
+	var isAdmin		= sess.isAdmin || false;
+	var type 		= new QuestionType(typename, qnumber, descr);
+
+	neo4j.updateType(type, function(err, data){
+		if(err==null){
+			res.render('admin',
+			{
+				admin: isAdmin
+			});
+		}
+		else{
+			renderError(res, 'error', err.message, 500);
+			return;
+		}
+	});
+});
+
+app.delete('/type/:typename', function(req, res){
+	var sess 		= req.session;
+	var typename 	= req.body.type;
+	var qnumber 	= req.body.number;
+	var descr 		= req.body.description;	
+	var isAdmin		= sess.isAdmin || false;
+	var type 		= new QuestionType(typename, qnumber, descr);
+
+	neo4j.deleteType(type, function(err, data){
+		if(err==null){
+			res.render('admin',
+			{
+				admin: isAdmin
+			});
+		}
+		else{
+			renderError(res, 'error', err.message, 500);
+			return;
+		}
+	});
+});
+
+app.get('/question/:id', function(req, res){
+	res.setHeader('Cache-Control', 'no-cache');
+	neo4j.getQuestion(req.params.id, function(err, data){
+		if(err==null){
+			res.json({
+				id: 		data.getID(),
+				correct: 	data.getCorrect().getName(),
+				wrong1:		data.getWrong1().getName(),
+				wrong2: 	data.getWrong2().getName(),
+				wrong3: 	data.getWrong3().getName(),
+				type: 		data.getType() 
+			});
+		}
+		else{
+			res.json({
+				error: 	err.message
+			});
+		}
+	});
+});
+
+app.put('/question', function(req, res){
+	var sess 		= req.session;
+	var canswer 	= req.body.canswer;
+	var wrong1 		= req.body.wanswer1;
+	var wrong2 		= req.body.wanswer2;
+	var wrong3 		= req.body.wanswer3;
+	var typename 	= req.body.edittype;
+	var question 	= req.body.editquestion;
+	var id 			= req.body.squestion;	
+	var isAdmin		= sess.isAdmin || false;
+
+	logger.debug(question);
+
+	if(canswer == null || wrong1 == null || wrong2 == null || wrong3 == null || typename == null || question == null || id == null){
+		renderError(res, 'error', 'All parameter is required!', 403);
+		return;
+	}
+
+	async.waterfall([
+		function(callback){
+			logger.debug('1');
+			neo4j.deleteQuestion(id, function(err, success){
+				if(err){
+					return renderError(res, 'error', err.message, 500);
+				}
+				callback(null, success);
+			});
+		},
+		function(success, callback){
+			logger.debug('2');
+			generateID(function(err, data){
+				if(err){
+					renderError(res, 'error', err.message, 500);
+					return;
+				}
+				callback(null, data);
+			});
+		},
+		function(aid, callback){
+			logger.debug('3');
+			var canswerobj 	= new Answer(canswer, true, aid + 1);
+			var wanswer1obj	= new Answer(wrong1, false, aid + 2);
+			var wanswer2obj	= new Answer(wrong2, false, aid + 3);
+			var wanswer3obj	= new Answer(wrong3, false, aid + 4);
+
+			var newquestion = new Question(question, canswerobj, wanswer1obj, wanswer2obj, wanswer3obj, aid, typename);
+			
+			neo4j.newQuestion(newquestion, function(err, success){
+				if(err==null){
+					res.render('admin',
+					{
+						admin: isAdmin
+					});
+				}
+				else{
+					renderError(res, 'error', err.message, 500);
+					return;
+				}
+			});
+		}
+	]);
+});
+
+app.delete('/question/:id', function(req, res){
+	var sess 		= req.session;
+	var isAdmin		= sess.isAdmin || false;
+	neo4j.deleteQuestion(req.params.id, function(err, success){
+		if(err){
+			return renderError(res, 'error', err.message, 500);
+		}
+		res.render('admin',
+		{
+			admin: isAdmin
+		});
+	});
+});
+
+app.get('/editquestion',  function(req, res){
+	async.waterfall([
+		function(callback){
+			neo4j.getQuestionTypeNames(function(err, records){
+				if(err==null){
+					callback(null, records);
+				}
+				else{
+					renderError(res, 'error', err.message, 500);
+					return;
+				}
+			});
+		},
+		function(types, callback){
+			neo4j.getQuestionNames(function(err, records){
+				if(err==null){
+					var ids = [];
+					var names = [];
+					for(var key in records) {
+				        if(records.hasOwnProperty(key)) {
+				            ids.push(key);
+				            names.push(records[key]);
+				         }
+				    }
+					res.render('editQuestion',
+					{
+						data: 		types,
+						question: 	names,
+						ids: 		ids
+					});
+				}
+				else{
+					renderError(res, 'error', err.message, 500);
+					return;
+				}
+			});
+		}
+	])
+	
+});
+
 
 app.get("/description/:type", checkAuth, function(req, res){
 	neo4j.getQuestionType(req.params.type, function(err, data){
@@ -310,7 +548,7 @@ app.get("/description/:type", checkAuth, function(req, res){
 	});
 });
 
-app.post("/quiz/:type", checkAuth, function(req, res){
+app.get('/quiz/:type',checkAuth, function(req, res){
 	var sess 		= req.session;
 	var username 	= sess.username;
 	var point		= sess.userpoint;
@@ -320,82 +558,90 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 	var type 		= req.params.type;
 	var befques 	= sess.befques;
 
-	if(point==null || qn==null || qt!=type || qtn==null || befques==null){
-		async.waterfall([
-			function(callback){
-				sess.userpoint 	= 0;
-				sess.qnumber 	= 0;
-				sess.qtype 		= type;
-				neo4j.getQuestionType(type, function(err, qtype){
-					if(err==null){
-						callback(null, qtype);
-					}
-					else{
-						renderError(res, 'error', err.message, 500);
-						return;
-					}
-				});
-			},
-			function(qtype, callback){
-				qtn = parseInt(qtype.getQuestionNumber());
-				sess.qtnumber = qtn;
-				neo4j.getQuestionsID(type, function(err, result){
-					if(err==null){
-						callback(null, qtn, result);
-					}
-					else{
-						renderError(res, 'error', err.message, 500);
-						return;
-					}
-				});
-			},
-			function(qtn, result, callback){
-				shuffle(result, function(err, array){
-					if(err!=null){
-						renderError(res, 'error', err.message, 500);
-						return;
-					}
-					callback(null, qtn, array);
-				});
-			},
-			function(qtn, result, callback){
-				if(result.length > qtn){
-					result.length = qtn;
+	async.waterfall([
+		function(callback){
+			sess.userpoint 	= 0;
+			sess.qnumber 	= 0;
+			sess.qtype 		= type;
+			neo4j.getQuestionType(type, function(err, qtype){
+				if(err==null){
+					callback(null, qtype);
 				}
-
-				befques 		= result;
-				sess.befques 	= befques;
-
-				neo4j.getQuestion(befques[0], type, function(err, data){
-					if(err==null){
-						var array = [data.getWrong1(), data.getWrong2(), data.getWrong3(), data.getCorrect()];
-						callback(null, data, array);
-					}
-					else{
-						renderError(res, 'error', err.message, 500);
-						return;
-					}
-				});
-			},
-			function(data, array, callback){
-				shuffle(array, function(err, array2){
-					if(err!=null){
-						renderError(res, 'error', err.message, 500);
-						return;
-					}
-					sendQuestion(res, array2, data, sess.userpoint, sess.qnumber, sess.qtnumber);
-				});
+				else{
+					renderError(res, 'error', err.message, 500);
+					return;
+				}
+			});
+		},
+		function(qtype, callback){
+			qtn = parseInt(qtype.getQuestionNumber());
+			sess.qtnumber = qtn;
+			neo4j.getQuestionsID(type, function(err, result){
+				if(err==null){
+					callback(null, qtn, result);
+				}
+				else{
+					renderError(res, 'error', err.message, 500);
+					return;
+				}
+			});
+		},
+		function(qtn, result, callback){
+			shuffle(result, function(err, array){
+				if(err!=null){
+					renderError(res, 'error', err.message, 500);
+					return;
+				}
+				callback(null, qtn, array);
+			});
+		},
+		function(qtn, result, callback){
+			if(result.length > qtn){
+				result.length = qtn;
 			}
-		],function(err){
-			console.log(err);
-			renderError(res, 'error', err.message, 500);
-			return;
-		});
+
+			befques 		= result;
+			sess.befques 	= befques;
+
+			neo4j.getQuestion(befques[0], function(err, data){
+				if(err==null){
+					var array = [data.getWrong1(), data.getWrong2(), data.getWrong3(), data.getCorrect()];
+					callback(null, data, array);
+				}
+				else{
+					renderError(res, 'error', err.message, 500);
+					return;
+				}
+			});
+		},
+		function(data, array, callback){
+			shuffle(array, function(err, array2){
+				if(err!=null){
+					renderError(res, 'error', err.message, 500);
+					return;
+				}
+				sendQuestion(res, array2, data, sess.userpoint, sess.qnumber, sess.qtnumber);
+			});
+		}
+	],function(err){
+		console.log(err);
+		renderError(res, 'error', err.message, 500);
 		return;
-	}
-	
-	var ansID = req.body.aid;
-	if (ansID==null){
+	});
+});
+
+app.post("/quiz/:type", checkAuth, function(req, res){
+	var sess 		= req.session;
+	var username 	= sess.username;
+	var point		= sess.userpoint;
+	var qn 			= sess.qnumber;
+	var qtn 		= sess.qtnumber;
+	var qt 	 		= sess.qtype;
+	var type 		= req.params.type;
+	var befques 	= sess.befques;
+	var ansID 		= req.body.aid;
+
+	if (ansID==null || point==null || qn==null || qt!=type || qtn==null || befques==null){
 		async.waterfall([
 			function(callback){
 				sess.userpoint 	= 0;
@@ -442,7 +688,7 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 				befques 		= result;
 				sess.befques 	= befques;
 
-				neo4j.getQuestion(befques[0], type, function(err, data){
+				neo4j.getQuestion(befques[0], function(err, data){
 					if(err==null){
 						var array = [data.getWrong1(),data.getWrong2(),data.getWrong3(),data.getCorrect()];
 						callback(null, data, array);
@@ -479,7 +725,6 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 				}
 				if(err==null && correct){
 					sess.userpoint = point + 1;
-					logger.debug('correct');
 				}
 				qn 				= qn + 1;
 				sess.qnumber 	= qn;
@@ -504,7 +749,7 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 			});
 		},
 		function(msg, callback){
-			neo4j.getQuestion(befques[qn], type, function(err, data){
+			neo4j.getQuestion(befques[qn], function(err, data){
 				if(err==null){
 					var array 		= [data.getWrong1(), data.getWrong2(), data.getWrong3(), data.getCorrect()];
 					callback(null, data, array);
@@ -541,7 +786,7 @@ app.get("/admin", checkAuthAdmin, function(req, res){
 	});
 });
 
-app.post("/authenticateAdmin",function(req, res){
+app.post("/admin",function(req, res){
 	username 	= req.body.username;
 	pass 		= req.body.password;
 
@@ -561,7 +806,7 @@ app.post("/authenticateAdmin",function(req, res){
 					callback(null, success);
 				}
 				else{
-					renderError(res, 'error', "Wrong username or password!", 403);
+					renderError(res, 'adminLogin', "Wrong username or password!", 403);
 					return;
 				}
 			});
@@ -574,7 +819,7 @@ app.post("/authenticateAdmin",function(req, res){
 
 				var sess = req.session;
 
-				encoding.encode(username+"admin", "/authenticateAdmin", function(cb){
+				encoding.encode(username+"admin", "/admin", function(cb){
 					sess.secretadminkey = cb;
 					sess.username 		= username;
 				});
@@ -609,7 +854,7 @@ app.get("/addeditor", checkAuthAdmin, function(req, res){
 	}
 });
 
-app.post("/tryneweditor", checkAuthAdmin, function(req, res){
+app.post("/addeditor", checkAuthAdmin, function(req, res){
 	var email 	= req.body.email;
 	var sess 	= req.session;
 	var isAdmin	= sess.isAdmin || false;
@@ -620,14 +865,18 @@ app.post("/tryneweditor", checkAuthAdmin, function(req, res){
 	}
 
 	neo4j.newEditor(email, function(err, success){
-		if(err==null){
+		if(err!=null){
+			renderError(res, 'newEditor', err.message, 403);
+			return;
+		}
+		if(success){			
 			res.render('admin',
 			{
 				admin: isAdmin
 			});
 		}
 		else{
-			renderError(res, 'neweditor', err.message, 403);
+			renderError(res, 'newEditor', "E-mail is not exist!", 403);
 			return;
 		}
 	})
@@ -637,7 +886,7 @@ app.get("/newtype", checkAuthAdmin, function(req, res){
 	res.render('newType');
 });
 
-app.post("/trynewtype", checkAuthAdmin, function(req, res){
+app.post("/newtype", checkAuthAdmin, function(req, res){
 	var typename 	= req.body.typename;
 	var qnumber 	= req.body.number;
 	var descr 		= req.body.description;
@@ -676,74 +925,57 @@ app.get("/newquestion", checkAuthAdmin, function(req, res){
 			renderError(res, 'error', err.message, 500);
 			return;
 		}
-	})
+	});
 });
 
-app.post("/trynewquestion", checkAuthAdmin, function(req, res){
+app.post("/newquestion", checkAuthAdmin, function(req, res){
 	var sess 		= req.session;
 	var isAdmin		= sess.isAdmin || false;
 
-	var d 	= new Date();
-    addZero(d.getHours(), function(err, data){
-    	if(err!=null){
-    		renderError(res, 'error', 'All parameter is required!', 403);
-			return;
-    	}
-    	h = data;
-    });
-    addZero(d.getMinutes(), function(err, data){
-    	if(err!=null){
-    		renderError(res, 'error', 'All parameter is required!', 403);
-			return;
-    	}
-    	m = data;
-    });
-    addZero(d.getSeconds(), function(err, data){
-    	if(err!=null){
-    		renderError(res, 'error', 'All parameter is required!', 403);
-			return;
-    	}
-    	s = data;
-    });
-    addZero(d.getMilliseconds(), function(err, data){
-    	if(err!=null){
-    		renderError(res, 'error', 'All parameter is required!', 403);
-			return;
-    	}
-    	ms = data;
-    });
+	var id;
 
-	var id = (h*1000000 + m*10000 + s*100 + ms)*10;
+	async.waterfall([
+		function(callback){
+			generateID(function(err, data){
+				if(err){
+					renderError(res, 'error', err.message, 500);
+					return;
+				}
+				callback(null, data);
+			});
+		},
+		function(id, callback){
+			if(req.body.question == null || req.body.canswer == null || req.body.wanswer1 == null || req.body.wanswer2 == null || req.body.wanswer3 == null || req.body.type==null){
+				renderError(res, 'error', 'All parameter is required!', 403);
+				return;
+			}
 
-	if(req.body.question == null || req.body.canswer == null || req.body.wanswer1 == null || req.body.wanswer2 == null || req.body.wanswer3 == null || req.body.type==null){
-		renderError(res, 'error', 'All parameter is required!', 403);
-		return;
-	}
+			var question 	= req.body.question;
+			var canswer 	= new Answer(req.body.canswer, true, id + 1);
+			var wanswer1 	= new Answer(req.body.wanswer1, false, id + 2);
+			var wanswer2 	= new Answer(req.body.wanswer2, false, id + 3);
+			var wanswer3 	= new Answer(req.body.wanswer3, false, id + 4);
+			var type 		= req.body.type;
 
-	var question 	= req.body.question;
-	var canswer 	= new Answer(req.body.canswer, true, id + 1);
-	var wanswer1 	= new Answer(req.body.wanswer1, false, id + 2);
-	var wanswer2 	= new Answer(req.body.wanswer2, false, id + 3);
-	var wanswer3 	= new Answer(req.body.wanswer3, false, id + 4);
-	var type 		= req.body.type;
-	
-	var newquestion = new Question(question, canswer, wanswer1, wanswer2, wanswer3, id, type);
-	
-	neo4j.newQuestion(newquestion, function(err, success){
-		if(err==null){
-			res.render('admin',
-			{
-				admin: isAdmin
+			var newquestion = new Question(question, canswer, wanswer1, wanswer2, wanswer3, id, type);
+			
+			neo4j.newQuestion(newquestion, function(err, success){
+				if(err==null){
+					res.render('admin',
+					{
+						admin: isAdmin
+					});
+				}
+				else{
+					renderError(res, 'error', err.message, 500);
+					return;
+				}
 			});
 		}
-		else{
-			renderError(res, 'error', err.message, 500);
-			return;
-		}
-	})
+	]);
 });
 
-app.get('/getquestionnumber/:id',function(req, res){
+app.get('/getquestionnumber/:id', function(req, res){
 	var id = req.params.id;
 	neo4j.getQuestionTypeByAnswer(id, function(err, data){
 		if(err){
@@ -757,20 +989,19 @@ app.get('/getquestionnumber/:id',function(req, res){
 	});
 });
 
-app.post('/test', function(req, res){
-	var aid = req.body.aid;
-	res.json({
-		question	: 'asd ' + aid,
-		a1			: 'a1',
-		a2			: 'a2',
-		a3			: 'a3',
-		a4			: 'a4',
-		aid1		: 'aid1 ' + aid,
-		aid2		: 'aid2 ' + aid,
-		aid3		: 'aid3 ' + aid,
-		aid4		: 'aid4 ' + aid,
+app.get('/edittype', checkAuthAdmin, function(req, res){
+	neo4j.getQuestionTypeNames(function(err, records){
+		if(err==null){
+			res.render('editType',
+			{
+				data: records
+			});
+		}
+		else{
+			renderError(res, 'error', err.message, 500);
+			return;
+		}
 	});
-	res.end();
 });
 
 app.use(function(req, res){

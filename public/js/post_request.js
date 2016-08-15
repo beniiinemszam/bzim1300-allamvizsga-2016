@@ -1,6 +1,4 @@
-function post(path, params) {
-    var method = "post";
-
+function post(path, params, method) {
     var form = document.createElement("form");
     form.setAttribute("method", method);
     form.setAttribute("action", path);
@@ -32,7 +30,7 @@ function login(){
         }
     }
     
-    post('/authenticate',params);
+    post('/login', params, 'post');
 }
 
 function signup(){
@@ -47,5 +45,5 @@ function signup(){
         }
     }
     
-    post('/trysignup',params);
+    post('/signup',params, 'post');
 }

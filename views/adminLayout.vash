@@ -69,9 +69,15 @@
 						<form action='/newtype' method='get'>
 				        	<input type='submit' value="New Type" class="btn btn-default custom-type-buttons">
 				        </form><br>
+                        <form action='/edittype' method='get'>
+                            <input type='submit' value="Edit Type" class="btn btn-default custom-type-buttons">
+                        </form><br>
 				        <form action='/newquestion' method='get'>
 				        	<input type='submit' value="New Question" class="btn btn-default custom-type-buttons">
 				        </form><br>
+                        <form action='/editquestion' method='get'>
+                            <input type='submit' value="Edit Question" class="btn btn-default custom-type-buttons">
+                        </form><br>
                     </div>
                 </div>
             </div>

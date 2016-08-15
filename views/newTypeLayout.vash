@@ -65,7 +65,7 @@
                     <div class="intro-text">
                         <h2>New Type</h2>
                         <hr>
-                        <form action='/trynewtype' method='post'>
+                        <form action='/newtype' method='post'>
 							<input type='text' name='typename' require placeholder="&#xf0c0; Type name"><br><br>
 							<input type='number' name='number' min='1' max='50' placeholder="&#xf162;  Question number"><br><br>
                             <textarea name="description" cols="40" rows="5" placeholder='&#xf129; Descriptiom'></textarea><br><br>

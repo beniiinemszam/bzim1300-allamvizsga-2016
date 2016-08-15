@@ -1,0 +1,25 @@
+@html.extend('editQuestionLayout', function(model){
+    @html.block('types', function(model){
+    	<select id='edittype' name='type' required>
+    		<option disabled selected value> Select a Type </option>
+	    	@model.data.forEach(function(item){
+	    		<option value='@item'>@item</option>
+	    	})
+    	</select><br>
+    })
+    @html.block('questions', function(model){
+    	<select id='editquestion' name='question' onChange="getInformation();" required>
+	    	<option disabled selected value> Select a Question </option>
+	    	@model.question.forEach(function(item){
+	    		<option value='@item'>@item</option>
+	    	})
+    	</select><br>
+    })
+    @html.block('ids', function(model){
+    	<select id='questionids' hidden>
+	    	@model.ids.forEach(function(item){
+	    		<option value='@item' hidden>@item</option>
+	    	})
+    	</select>
+    })
+})
