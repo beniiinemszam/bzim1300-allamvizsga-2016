@@ -145,3 +145,7 @@ input { font-family: 'FontAwesome'; } /* This is for the placeholder */
 .editType{
   width: 80%;
 }
+
+.paragraph-justify{
+  text-align: justify;
+}

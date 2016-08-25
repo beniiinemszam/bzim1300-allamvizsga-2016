@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Quiz</title>
+    <title>Dolgozat neve</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -19,7 +19,7 @@
     <link href="/css/login-signup-form.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 
@@ -35,7 +35,7 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="/">Quiz</a>
+                <a class="navbar-brand" href="/">Dolgozat neve</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -43,6 +43,12 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li class="hidden">
                         <a href="#page-top"></a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#contact">Contact</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="/logout">Log out</a>
                     </li>
                 </ul>
             </div>
@@ -57,19 +63,9 @@
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
                     <div class="intro-text">
-                        <h2>Log in</h2>
+                        <h3>Error code: [[= model.code]]</h3>
+                        <h1>[[= model.message]]</h1>
                         <hr>
-                        @html.block('errorMessage')
-                        <div class="row">
-                            <div class="col-md-12 col-sm-12">
-                                <form id="signupForm" action="javascript:void(0);">
-                                    <input type="text" name="username" required placeholder="&#61447; Username"><br><br>
-                                    <input type="password" name="password" required placeholder="&#xf023; Password"><br><br>
-                                    <input type="password" name="email" required placeholder="&#xf0e0; E-mail"><br><br>
-                                    <button onclick="signup()" class="btn btn-default custom-login-buttons">submit</button>
-                                </form>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -81,11 +77,10 @@
         <div class="footer-above">
             <div class="container">
                 <div class="row">
-                    <div class="footer-col col-md-4 hidden-xs hidden-xs">
-                        <h3>News</h3>
-                        <ul style="overflow:auto; height:150px;">
-                            <li>Alpha 1.0 released!</li>
-                        </ul>
+                    <div class="footer-col col-md-4">
+                        <h3>Location</h3>
+                        <p>3481 Melrose Place
+                            <br>Beverly Hills, CA 90210</p>
                     </div>
                     <div class="footer-col col-md-4">
                         <h3>Around the Web</h3>
@@ -102,11 +97,14 @@
                             <li>
                                 <a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-linkedin"></i></a>
                             </li>
+                            <li>
+                                <a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-dribbble"></i></a>
+                            </li>
                         </ul>
                     </div>
                     <div class="footer-col col-md-4">
-                        <h3>About me</h3>
-                        <p>I'm Zoltán Benedek from Romania and this is my application, created in order to final exam.</p>
+                        <h3>About Freelancer</h3>
+                        <p>Freelance is a free to use, open source Bootstrap theme created by <a href="http://startbootstrap.com">Start Bootstrap</a>.</p>
                     </div>
                 </div>
             </div>
@@ -115,7 +113,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        Copyright © 2016 - All Rights Reserved.
+                        Copyright &copy; Your Website 2016
                     </div>
                 </div>
             </div>
@@ -146,9 +144,6 @@
 
     <!-- Theme JavaScript -->
     <script src="/js/freelancer.min.js"></script>
-
-    <!-- Custom JavaScript -->
-    <script src="/js/post_request.min.js"></script>
 
 </body>
 

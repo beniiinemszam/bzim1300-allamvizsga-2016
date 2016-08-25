@@ -7,6 +7,7 @@ var winston			= require("winston");
 var bodyParser 		= require('body-parser');
 var session 		= require('express-session');
 var vash 			= require('vash');
+// var engine 			= require('express-dot-engine');
 var neo4j			= require(path.join(__dirname + "/services/neo4jConnection"));
 var encoding		= require(path.join(__dirname + "/services/encoding"));
 var Question		= require(path.join(__dirname + "/models/Question"));
@@ -16,8 +17,10 @@ var Answer        	= require(path.join(__dirname + "/models/Answer"));
 var app 			= express();
 
 
+/*app.engine('dot', engine.__express);
+app.set('views', path.join(__dirname, './views'));
+app.set('view engine', 'dot');*/
 app.set('view engine', 'vash');
-app.disable('view cache');
 
 app.use(compression());
 app.use(express.static(__dirname + "/public"));
@@ -28,6 +31,14 @@ app.use(session({
   	resave: false,
   	saveUninitialized: true
 }));
+
+/*app.get('/test', function(req, res){
+  res.render('error', 
+  {
+  	message: "uzenet",
+	code: 200
+  })
+});*/
 
 var logger = new(winston.Logger)({
     transports: [
@@ -347,7 +358,7 @@ app.get("/type/:typename", function(req, res){
 	});
 });
 
-app.put("/type/:typename", function(req, res){
+app.put("/type/:typename", checkAuthAdmin, function(req, res){
 	var sess 		= req.session;
 	var typename 	= req.body.type;
 	var qnumber 	= req.body.number;
@@ -369,7 +380,7 @@ app.put("/type/:typename", function(req, res){
 	});
 });
 
-app.delete('/type/:typename', function(req, res){
+app.delete('/type/:typename', checkAuthAdmin, function(req, res){
 	var sess 		= req.session;
 	var typename 	= req.body.type;
 	var qnumber 	= req.body.number;
@@ -412,7 +423,7 @@ app.get('/question/:id', function(req, res){
 	});
 });
 
-app.put('/question', function(req, res){
+app.put('/question', checkAuthAdmin, function(req, res){
 	var sess 		= req.session;
 	var canswer 	= req.body.canswer;
 	var wrong1 		= req.body.wanswer1;
@@ -475,7 +486,7 @@ app.put('/question', function(req, res){
 	]);
 });
 
-app.delete('/question/:id', function(req, res){
+app.delete('/question/:id', checkAuthAdmin, function(req, res){
 	var sess 		= req.session;
 	var isAdmin		= sess.isAdmin || false;
 	neo4j.deleteQuestion(req.params.id, function(err, success){
@@ -489,7 +500,7 @@ app.delete('/question/:id', function(req, res){
 	});
 });
 
-app.get('/editquestion',  function(req, res){
+app.get('/editquestion', checkAuthAdmin, function(req, res){
 	async.waterfall([
 		function(callback){
 			neo4j.getQuestionTypeNames(function(err, records){
@@ -786,7 +797,7 @@ app.get("/admin", checkAuthAdmin, function(req, res){
 	});
 });
 
-app.post("/admin",function(req, res){
+app.post("/admin", function(req, res){
 	username 	= req.body.username;
 	pass 		= req.body.password;
 
@@ -975,7 +986,7 @@ app.post("/newquestion", checkAuthAdmin, function(req, res){
 	]);
 });
 
-app.get('/getquestionnumber/:id', function(req, res){
+app.get('/getquestionnumber/:id', checkAuth, function(req, res){
 	var id = req.params.id;
 	neo4j.getQuestionTypeByAnswer(id, function(err, data){
 		if(err){
@@ -1015,12 +1026,12 @@ var server = app.listen(process.env.PORT || 8081 ,function(){
 	logger.info("Server listening at http://%s:%s",host,port);
 }).on('error', function(err){
     logger.info('on error handler');
-    logger.info(err.stack);
+    logger.info(err.message);
 });
 
 process.on('uncaughtException', function(err) {
     logger.info('process.on handler');
-    logger.error(err.stack);
+    logger.error(err.message);
 });
 
 module.exports = server;

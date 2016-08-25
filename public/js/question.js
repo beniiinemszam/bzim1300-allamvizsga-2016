@@ -67,8 +67,10 @@ function newQuestion(id){
       if (xhttp.readyState == 4 && xhttp.status == 200){
         var myArr = JSON.parse(xhttp.responseText);
 
-        document.getElementById('question-number').innerText  = 'question: ' + myArr.qtn + ' / ' + myArr.qn;
-        document.getElementById('question-correct').innerText = 'correct: ' +myArr.cn;
+        var cn = parseInt(myArr.qn) + 1
+
+        document.getElementById('question-number').innerText  = 'question: ' + myArr.qtn + ' / ' + cn;
+        document.getElementById('question-correct').innerText = 'correct: ' + myArr.cn;
         document.getElementById('question').innerText = myArr.question;
         document.getElementById('bt1').innerText      = myArr.ans1;
         document.getElementById('bt2').innerText      = myArr.ans2;

@@ -4,13 +4,15 @@ var winston       = require("winston");
 var QuestionType  = require(path.join(__dirname + "/../models/QuestionType"));
 var Question      = require(path.join(__dirname + "/../models/Question"));
 var Answer        = require(path.join(__dirname + "/../models/Answer"));
+var User          = require(path.join(__dirname + "/../models/User"));
 
-//var driver        = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "neo4jpassword"));
 
-var graphenedbURL   = process.env.GRAPHENEDB_BOLT_URL;
+var driver        = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "neo4jpassword"));
+
+/*var graphenedbURL   = process.env.GRAPHENEDB_BOLT_URL;
 var graphenedbUser  = process.env.GRAPHENEDB_BOLT_USER;
 var graphenedbPass  = process.env.GRAPHENEDB_BOLT_PASSWORD;
-var driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser, graphenedbPass));
+var driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser, graphenedbPass));*/
 
 var logger = new(winston.Logger)({
     transports: [

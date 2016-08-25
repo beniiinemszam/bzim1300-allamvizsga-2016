@@ -4,7 +4,7 @@ var chaiHttp 	= require('chai-http');
 var neo4j 		= require('../services/neo4jConnection');
 var should 		= chai.should();
 
-chai.use(chaiHttp);
+// chai.use(chaiHttp);
 
 describe('databaseTest', function(done) {
 	it('isExist without parameters will return false', function(done) {
