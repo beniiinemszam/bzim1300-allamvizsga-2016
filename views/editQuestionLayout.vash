@@ -120,7 +120,7 @@
                     </div>
                     <div class="footer-col col-md-4">
                         <h3>About me</h3>
-                        <p>I'm Zoltán Benedek from Romania and this is my application, created in order to final exam.</p>
+                        <p>I'm Zoltán Benedek from Romania and this is my application, is created as a project for the license exam.</p>
                     </div>
                 </div>
             </div>
@@ -162,7 +162,7 @@
     <script src="/js/freelancer.min.js"></script>
 
     <!-- Custom JavaScript -->
-    <script src="/js/edit_question.js"></script>
+    <script src="/js/edit_question.min.js"></script>
 
 </body>
 

@@ -85,11 +85,11 @@
             <div class="row">
                 <div class="col-lg-4 col-lg-offset-2">
                     <!-- <p class="paragraph-justify">Az alkalmazás egy még fejlesztés alatt álló kvíz játék. Játék fő célja amellett, hogy szórakoztat, hogy oktasson is. Belejelentkezés után lehetőség nyílik típusok szerint csoportositott kérdéseket megoldani.</p> -->
-                    <p class="paragraph-justify">The application is one even developing quiz game. The main goal beside the pastime is also teaching. After log in, you have chance to solve a test, which is grouped by types.</p>
+                    <p class="paragraph-justify">The application is a quiz game under development. The main goal of the game, besides to pass the time, is to teach the players. After login one can solve tests which are grouped by types.</p>
                 </div>
                 <div class="col-lg-4">
                     <!-- <p class="paragraph-justify">Az alkalmazás államvizsga céljából készült. Minden felhasznált eszköz, technológia ingyenes és nyílt forráskódú. Az alkalmazásról további információk elérhetőek lesznek a védés után.</p> -->
-                    <p class="paragraph-justify">The application created in order to final exam. All used tool, technology is free licensed and open sorce. More information about application will be available after exam.</p>
+                    <p class="paragraph-justify">The application is created as a project for the license exam. All tools and technologies used are free licensed and open source. More information about the application will be available after the exam.</p>
                 </div>
             </div>
         </div>
@@ -178,7 +178,7 @@
                     </div>
                     <div class="footer-col col-md-4">
                         <h3>About me</h3>
-                        <p>I'm Zoltán Benedek from Romania and this is my application, created in order to final exam.</p>
+                        <p>I'm Zoltán Benedek from Romania and this is my application, is created as a project for the license exam.</p>
                     </div>
                 </div>
             </div>
