@@ -3,7 +3,7 @@ var defaultAdmin 	= false;
 var defaultEditor 	= false;
 
 function User(userName, password, email, isAdmin, isEditor){
-	this._sername 	= userName;
+	this._userName 	= userName;
 	this._password 	= password;
 	this._email 	= email;
 	this._isAdmin 	= isAdmin  || defaultAdmin;
@@ -11,7 +11,7 @@ function User(userName, password, email, isAdmin, isEditor){
 }
 
 method.getUserName = function(){
-	return this._User;
+	return this._userName;
 }
 
 method.getPassword = function(){

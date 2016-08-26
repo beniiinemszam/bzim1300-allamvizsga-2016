@@ -7,7 +7,7 @@ function Question(question, correct, wrong1, wrong2, wrong3, ID, type){
 	this._wrong2 	= wrong2;
 	this._wrong3 	= wrong3;
 	this._ID	 	= ID;
-	this._type		=type;
+	this._type		= type;
 }
 
 method.getQuestion = function(){
@@ -32,6 +32,10 @@ method.getWrong3 = function(){
 
 method.getID = function(){
 	return this._ID;
+}
+
+method.setID = function(ID){
+	this._ID = ID;
 }
 
 method.getType = function(){

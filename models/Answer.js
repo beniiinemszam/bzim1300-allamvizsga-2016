@@ -18,4 +18,8 @@ method.getID = function(){
 	return this._ID;
 };
 
+method.setID = function(ID){
+	this._ID = ID;
+};
+
 module.exports = Answer;
