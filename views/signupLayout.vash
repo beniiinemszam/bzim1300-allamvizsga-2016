@@ -57,7 +57,7 @@
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
                     <div class="intro-text">
-                        <h2>Log in</h2>
+                        <h2>Sign up</h2>
                         <hr>
                         @html.block('errorMessage')
                         <div class="row">
@@ -65,7 +65,7 @@
                                 <form id="signupForm" action="javascript:void(0);">
                                     <input type="text" name="username" required placeholder="&#61447; Username"><br><br>
                                     <input type="password" name="password" required placeholder="&#xf023; Password"><br><br>
-                                    <input type="password" name="email" required placeholder="&#xf0e0; E-mail"><br><br>
+                                    <input type="email" name="email" required placeholder="&#xf0e0; E-mail"><br><br>
                                     <button onclick="signup()" class="btn btn-default custom-login-buttons">submit</button>
                                 </form>
                             </div>
@@ -81,9 +81,9 @@
         <div class="footer-above">
             <div class="container">
                 <div class="row">
-                    <div class="footer-col col-md-4 hidden-xs hidden-xs">
+                    <div class="footer-col col-md-4 hidden-xs hidden-sm">
                         <h3>News</h3>
-                        <ul style="overflow:auto; height:150px;">
+                        <ul class="news">
                             <li>Alpha 1.0 released!</li>
                         </ul>
                     </div>

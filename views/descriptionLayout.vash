@@ -58,7 +58,7 @@
     <header>
         <div class="container">
             <div class="row">
-                <div class="col-md-offset-4 col-md-4">
+                <div class="col-md-offset-4 col-md-4 col-xs-offset-1 col-xs-10">
                     <div class="intro-text">
                         <h2>Description</h2>
                         <hr>
@@ -74,9 +74,9 @@
         <div class="footer-above">
             <div class="container">
                 <div class="row">
-                    <div class="footer-col col-md-4 hidden-xs hidden-xs">
+                    <div class="footer-col col-md-4 hidden-xs hidden-sm">
                         <h3>News</h3>
-                        <ul style="overflow:auto; height:150px;">
+                        <ul class="news">
                             <li>Alpha 1.0 released!</li>
                         </ul>
                     </div>

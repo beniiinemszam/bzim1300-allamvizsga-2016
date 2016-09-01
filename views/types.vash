@@ -10,7 +10,7 @@
 
 		@model.data.forEach(function(item){
 			<div class="row">
-				<div class="col-md-12 list">
+				<div class="col-md-offset-0 col-md-12 list col-sm-offset-3 col-sm-6">
 					<form action='/description/@item' method='get'>
 						<img class="custom-type-img" src="/img/question.png">
 						<button class="btn btn-default custom-type-buttons">@item</button>

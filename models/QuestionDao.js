@@ -7,13 +7,17 @@ var neo4j    		= require(path.join(__dirname + "/../services/neo4jConnection"));
 var generate   		= require(path.join(__dirname + "/../services/generateID"));
 
 var self = module.exports = {
+	/*
+		Kérdés mentése no4j segítségével
+		Visszatérítés: igaz vagy hamis sikerességtől függően vagy hiba
+	*/
 	save : function(question, callback){
+		//sorba, de nem blokálva ID kigenerálása, mentés megívása és eredmény/hiba kezelés
 		async.waterfall([
 			function(callback){
 				generate.generateID(function(err, data){
 					if(err){
-						renderError(res, 'error', err.message, 500);
-						return;
+						return callback(new CustomError(err.message, 500, 'error'));
 					}
 					callback(null, data);
 				});
@@ -39,6 +43,10 @@ var self = module.exports = {
 			callback(null, result);
 		});
 	},
+	/*
+		adott kérdés törlése neo4j használatával
+		Visszatéríti igaz/hamis sikeresség függvényében vagy hibát dob
+	*/
 	delete : function(question, callback){
 		neo4j.deleteQuestion(question, function(err, success){
 			if(err){
@@ -47,7 +55,12 @@ var self = module.exports = {
 			callback(null, success);
 		});
 	},
+	/*
+		Kérdés módosítása
+		Visszatéríti igaz/hamis sikeresség függvényében vagy hibát dob
+	*/
 	update : function(question, callback){
+		//sorba, de nem blokálva elöző kérdés és válaszok törlése, ID kigenerálása, mentés megívása és eredmény/hiba kezelés
 		async.waterfall([
 			function(callback){
 				neo4j.deleteQuestion(question, function(err, success){
@@ -72,7 +85,6 @@ var self = module.exports = {
 				var wanswer3obj	= new Answer(question.getWrong3().getName(), false, aid + 4);
 
 				var newquestion = new Question(question.getQuestion(), canswerobj, wanswer1obj, wanswer2obj, wanswer3obj, aid, question.getType());
-				
 				neo4j.newQuestion(newquestion, function(err, success){
 					if(err){
 						return callback(new CustomError(err.message, 500, 'error'));
@@ -87,6 +99,10 @@ var self = module.exports = {
 	        return callback(null, result);
 		});
 	},
+	/*
+		Adott kérdés adatainak lekérése
+		Visszatérített érték a kérdés vagy hibát dob
+	*/
 	getQuestion : function(question, callback){
 		neo4j.getQuestion(question, function(err, data){
 			if(err==null){
@@ -95,6 +111,9 @@ var self = module.exports = {
 			return callback(new CustomError(err.message, 500, null));
 		});
 	},
+	/*
+		Visszaadja az összes kérdést és a hozzá tartozó azonosítót, különben hibát dob
+	*/
 	getAllName : function(callback){
 		neo4j.getQuestionNames(function(err, records){
 			if(err==null){
@@ -113,7 +132,12 @@ var self = module.exports = {
 			}
 		});
 	},
+	/*
+		Adott típushoz tartozó kérdéssor kigenerálása és az első kérédés meghatározása
+	*/
 	getNewQuestion : function(type, callback){
+		//sorba, de nem blokálva a típus meghatározása, a típushoz tartozó kérdések meghatározása, kérdések összekeverése, felesleges kérdések levágása, kérdés kigenerálása, válaszok sorrendjének összekeverése
+		// végeredmény/hiba kezelés
 		async.waterfall([
 			function(callback){
 				neo4j.getQuestionType(type, function(err, qtype){
@@ -171,7 +195,12 @@ var self = module.exports = {
 			callback(null, array, data, befques, qtn);
 		});
 	},
+	/*
+		Következő kérédés meghatározása
+	*/
 	getNextQuestion : function(answer, befques, index, callback){
+		//sorba, de nem blokálva a válasz helyességének ellenörzése, következő kérdések meghatározása, válaszok sorrendjének összekeverése
+		// végeredmény/hiba kezelés
 		async.waterfall([
 			function(callback){
 				neo4j.isCorrect(answer, function(err, correct){

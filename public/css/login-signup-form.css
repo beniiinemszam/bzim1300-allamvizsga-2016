@@ -47,15 +47,19 @@
     position: relative; 
 }
 
-select {
+.admin_form > select {
     width: 80%;
 }
 
-input[type="number"] {
+.admin_form > input[type="number"] {
     width: 80%;
 }
 
-textarea{
+.admin_form > input[type="text"] {
+    width: 80%;
+}
+
+.admin_form > textarea{
   width: 80%;
   font-family: FontAwesome;
 }
@@ -148,4 +152,13 @@ input { font-family: 'FontAwesome'; } /* This is for the placeholder */
 
 .paragraph-justify{
   text-align: justify;
+}
+ul{
+  list-style-position: inside;
+}
+
+.news{
+  padding-left: 0px;
+  overflow:auto;
+  height:150px;
 }

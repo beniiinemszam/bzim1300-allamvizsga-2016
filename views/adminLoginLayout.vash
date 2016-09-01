@@ -80,9 +80,9 @@
         <div class="footer-above">
             <div class="container">
                 <div class="row">
-                    <div class="footer-col col-md-4 hidden-xs hidden-xs">
+                    <div class="footer-col col-md-4 hidden-xs hidden-sm">
                         <h3>News</h3>
-                        <ul style="overflow:auto; height:150px;">
+                        <ul class="news">
                             <li>Alpha 1.0 released!</li>
                         </ul>
                     </div>

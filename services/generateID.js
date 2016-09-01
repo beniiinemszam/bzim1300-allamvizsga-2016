@@ -1,64 +1,65 @@
-var async = require("async");
-var winston			= require("winston");
+var async 		= require("async");
+var Logger		= require("./logger");
 
-var logger = new(winston.Logger)({
-    transports: [
-        new(winston.transports.Console)({
-        	level: 'debug'
-        }),
-        new(winston.transports.File)({
-        	filename	: __dirname + '/logs/logs.log',
-        	level		: 'info',		
-        	json		: true
-        })
-    ]
+var logger;
+
+Logger.getLogger(function(loggerobj){
+	logger = loggerobj;
 });
 
 var self = module.exports = {
+	/*
+		Egyedi azonosító generálása
+	*/
 	generateID: function(callback){
-		var d 	= new Date();
+		var d = new Date();
 		async.waterfall([
 			function(callback){
-				self.addZero(d.getHours(), function(err, data){
-			    	if(err!=null){
+				self.addZero(d.getMonth(), function(err, data){
+			    	if(err){
+						logger.debug("month");
 			    		return callback(err);
 			    	}
 			    	callback(null, data);
 			    });
 			},
-			function(h, callback){
+			function(month, callback){
+				self.addZero(d.getDay()+1, function(err, data){
+			    	if(err){
+			    		return callback(err);
+			    	}
+			    	callback(null, month, data);
+			    });
+			},
+			function(day, month, callback){
+				self.addZero(d.getHours(), function(err, data){
+			    	if(err){
+			    		return callback(err);
+			    	}
+			    	callback(null, day, month, data);
+			    });
+			},
+			function(day, month, hours, callback){
 				self.addZero(d.getMinutes(), function(err, data){
-			    	if(err!=null){
+			    	if(err){
 			    		return callback(err);
 			    	}
-			    	callback(null, h, data);
-			    });
-			},
-			function(h, m, callback){
-				self.addZero(d.getSeconds(), function(err, data){
-			    	if(err!=null){
-			    		return callback(err);
-			    	}
-			    	callback(null, h, m, data);
-			    });
-			},
-			function(h, m, s, callback){
-				self.addZero(d.getMilliseconds(), function(err, data){
-			    	if(err!=null){
-			    		return callback(err);
-			    	}
-			    	ms = data;
-			    	var id = (h*1000000 + m*10000 + s*100 + ms)*10;
+			    	min = data;
+			    	var id = (month*100000 + day*10000 + hours*100 + min)*10;
 			    	callback(null, id);
 			    });
 			}
 		], function (err, result) {
-		    if(err!=null){
+		    if(err){
 	    		return callback(err);
 	    	}
 	    	callback(null, result);
 		});
 	},
+	/*
+		Kétszámjegyű számokat hoz létre és térít vissza, ha a paraméter meg volt adva
+		különben hiba
+	*/
 	addZero: function(i, callback) {
 		if(i){
 		    if (i < 10) {
@@ -69,6 +70,10 @@ var self = module.exports = {
 		logger.error("Missing number in adZero!");
 		callback(new Error("Internal server error!"));
 	},
+	/*
+		Összekeveri egy tömb adatait
+		Üres tömb esetén hiba
+	*/
 	shuffle: function(array, callback) {
 		if(array==null){
 			return callback(new Error("Array is empty - in shuffle!"));

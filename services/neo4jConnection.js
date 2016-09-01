@@ -1,34 +1,31 @@
 var neo4j         = require('neo4j-driver').v1;
 var path          = require("path");
-var winston       = require("winston");
 var async         = require("async");
+var Logger        = require(path.join(__dirname + "/logger"));
 var QuestionType  = require(path.join(__dirname + "/../models/QuestionType"));
 var Question      = require(path.join(__dirname + "/../models/Question"));
 var Answer        = require(path.join(__dirname + "/../models/Answer"));
 var User          = require(path.join(__dirname + "/../models/User"));
 
 
-// var driver        = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "neo4jpassword"));
+var driver        = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "neo4jpassword"));
 
-var graphenedbURL   = process.env.GRAPHENEDB_BOLT_URL;
+/*var graphenedbURL   = process.env.GRAPHENEDB_BOLT_URL;
 var graphenedbUser  = process.env.GRAPHENEDB_BOLT_USER;
 var graphenedbPass  = process.env.GRAPHENEDB_BOLT_PASSWORD;
-var driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser, graphenedbPass));
+var driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser, graphenedbPass));*/
 
-var logger = new(winston.Logger)({
-    transports: [
-        new(winston.transports.Console)({
-          level: 'debug'
-        }),
-        new(winston.transports.File)({
-          filename  : __dirname + '/../logs/logs.log',
-          level   : 'info',   
-          json    : true
-        })
-    ]
+var logger;
+
+Logger.getLogger(function(loggerobj){
+  logger = loggerobj;
 });
 
 var self = module.exports = {
+  /*
+    Felhasználó beléptetés
+    Sikeres bejelnetkezéskor visszatérít true-e, különben false-t
+  */
   authenticateUser: function (user, callback) {
     try{
       var session = driver.session();
@@ -46,7 +43,7 @@ var self = module.exports = {
             }
             else{
     				  exist = true;
-              logger.info("%s loged in!", user.getUserName(), {editor: user.getIsAdmin()});
+              logger.info("%s loged in!-authenticateUser", user.getUserName(), {editor: user.getIsAdmin()});
             }
     			},
     			onCompleted: function(){
@@ -54,15 +51,21 @@ var self = module.exports = {
     				return callback(null, exist);
     			},
     			onError: function(err){
-            logger.error('Error in neo4jConnection-authenticateUser: ', err.stack);
+            logger.error('Error in neo4jConnection-authenticateUser: ', err.message);
             session.close();
-            return callback(err);
+            return callback(new Error("Internal server error."));
     			}
     	   });
     } catch(err){
-      return callback(err);
+      logger.error('Error in neo4jConnection-authenticateUser: ', err.message);
+      return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Uj felhasználó létrehozása
+    Ha szabad a felhasználó és email akkor létrehozza és visszatérít egy true-t
+    különben false-t
+  */
   newUser: function (user, callback) {
       async.waterfall([
         function(callback){
@@ -72,78 +75,96 @@ var self = module.exports = {
             callback(null, session);
           }catch(err){
             logger.error('Error in neo4jConnection-newUser: ', err.message);
-            return callback(err);
+           return callback(new Error("Internal server error."));
           }
         },
         function(sess, callback){
           self.isExist(user, function(err, exist){
             if(err){
               logger.error('Error in neo4jConnection-newUser: ', err.message);
-              return callback(err);
+              return callback(new Error("Internal server error."));
             }
             callback(null, exist, sess)
           });
         },
         function(exist, session, callback){
-          session
-            .run("Create (p:Person{name:{username},password:{password},email:{emailpar}}) return p.name as name",
-              {
-                username: user.getUserName(),
-                password: user.getPassword(),
-                emailpar: user.getEmail()
+          if(!exist){
+            session
+              .run("Create (p:Person{name:{username},password:{password},email:{emailpar}}) return p.name as name",
+                {
+                  username: user.getUserName(),
+                  password: user.getPassword(),
+                  emailpar: user.getEmail()
+                })
+              .then(function(result){
+                if(result.records.length >= 0){
+                  succes = true;
+                  logger.info("%s signed up!-newUser", user.getUserName());
+                }
+                session.close();
+                return callback(null, succes);
               })
-            .then(function(result){
-              if(result.records.length >= 0){
-                succes = true;
-                logger.info("%s signed up!", username);
-              }
-              session.close();
-              return callback(null, succes);
-            })
-            .catch(function(err){
-              logger.error('Error in neo4jConnection-newUser: ', error.stack);
-              session.close();
-              return callback(err);
-            });
+              .catch(function(err){
+                logger.error('Error in neo4jConnection-newUser: ', err.message);
+                session.close();
+                return callback(new Error("Internal server error."));
+              });
+          }
+          else{
+            logger.info("%s Username or %s E-mail is exist!-newUser", user.getUserName(), user.getEmail());
+            callback(null, false);
+          }
         }
       ], function(err, result){
         if(err){
-          return callback(err);
+          logger.error('Error in neo4jConnection-newUser: ', err.message);
+          return callback(new Error("Internal server error."));
         }
         return callback(null, result);
       });
   },
+  /*
+    Meglévő felhasználónak email alapján szerkesztői szerepkör megadása
+    Ha létezik az email akkor true különben false
+  */
   newEditor: function(user, callback){
     try{
       var session = driver.session();
       var succes  = false;
       self.isExist(user, function(err, exist){
         if(err){
-          return callback(err);
+          logger.error('Error in neo4jConnection-newEditor: ', err.message);
+          return callback(new Error("Internal server error."));
         }
         if(exist){
           session
             .run("Match(p:Person) where p.email={emailpar} set p.editor = true return p.name",{emailpar: user.getEmail()})
             .then(function(record){
               succes = true;
-              logger.info("%s is a new editor!", user.getEmail());
+              logger.info("%s is a new editor!-newEditor", user.getEmail());
               session.close();
               return callback(null, succes);
             })
-            .catch(function(error){
-              logger.error(error.stack);
+            .catch(function(err){
+              logger.error('Error in neo4jConnection-newEditor: ', err.message);
               session.close();
               return callback(null, false);
             });
         }
         else{
-           return callback(null, false);
+          logger.info("%s is a wrong email!-newEditor", user.getEmail());
+          return callback(null, false);
         }
       });
     } catch(err){
+      logger.error('Error in neo4jConnection-newEditor: ', err.message);
       return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Ellenörzi, hogy a felhasználó létezik-e
+    Ha igen, akkor true különben false
+  */
   isExist: function (user, callback){
     try{
       var session = driver.session();
@@ -162,8 +183,8 @@ var self = module.exports = {
     				session.close();
     				return callback(null, exist);
     			},
-    			onError: function(error){
-    				logger.error('Error in neo4jConnection-isExist: ', error.message);
+    			onError: function(err){
+    				logger.error('Error in neo4jConnection-isExist: ', err.message);
             session.close();
             return callback(new Error("Internal server error."));
     			}
@@ -173,6 +194,9 @@ var self = module.exports = {
       return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Visszatéríti az összes tipusról, hogy hány kérdésből kell álljon és hogy mennyi van jelenleg
+  */
   getQuestionTypes: function (callback){
     try{
       var session = driver.session();
@@ -196,15 +220,19 @@ var self = module.exports = {
           session.close();
           return callback(null, array);
         })
-        .catch(function(error){
-            logger.error('Error in neo4jConnection-getQuestionTypes: ', error.stack);
+        .catch(function(err){
+            logger.error('Error in neo4jConnection-getQuestionTypes: ', err.message);
             session.close();
             return callback(new Error("Internal server error."));
         });
     } catch(err){
+      logger.error('Error in neo4jConnection-getQuestionTypes: ', err.message);
       return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Visszatéríti az összes típus nevét, minden csak egyszer
+  */
   getQuestionTypeNames: function(callback){
     try{
       var session = driver.session();
@@ -219,16 +247,20 @@ var self = module.exports = {
             session.close();
             return callback(null, data);
           },
-          onError: function(error){
+          onError: function(err){
             session.close();
-            logger.error('Error in neo4jConnection-getQuestionTypeName: ', error.stack);
+            logger.error('Error in neo4jConnection-getQuestionTypeName: ', err.message);
             return callback(new Error("Internal server error."));
           }
         });
     } catch(err){
+      logger.error('Error in neo4jConnection-getQuestionTypeName: ', err.message);
       return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Adott kérdés ID alapján megkeresi a válaszait és visszatéríti azokat
+  */
   getQuestionAnswers: function(question, callback){
     try{
       var session = driver.session();
@@ -243,16 +275,20 @@ var self = module.exports = {
             session.close();
             return callback(null, data);
           },
-          onError: function(error){
+          onError: function(err){
             session.close();
-            logger.error('Error in neo4jConnection-getQuestionAnswers: ', error.stack);
+            logger.error('Error in neo4jConnection-getQuestionAnswers: ', err.message);
             return callback(new Error("Internal server error."));
           }
         });
     } catch(err){
+      logger.error('Error in neo4jConnection-getQuestionAnswers: ', err.message);
       return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Visszatéríti az összes kérdést és a hozzá tartozó azonosítót
+  */
   getQuestionNames: function(callback){
     try{
       var session = driver.session();
@@ -267,16 +303,20 @@ var self = module.exports = {
             session.close();
             return callback(null, data);
           },
-          onError: function(error){
+          onError: function(err){
             session.close();
-            logger.error('Error in neo4jConnection-getQuestionName: ', error.stack);
+            logger.error('Error in neo4jConnection-getQuestionName: ', err.message);
             return callback(new Error("Internal server error."));
           }
         });
     } catch(err){
+      logger.error('Error in neo4jConnection-getQuestionName: ', err.message);
       return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Megadja egy adott tipushoz tartozó információkat
+  */
   getQuestionType: function(type, callback){
     try{
       var session = driver.session();
@@ -298,15 +338,18 @@ var self = module.exports = {
           },
           onError: function(err){
             session.close();
-            logger.error('Error in neo4jConnection-getQuestionType: ', err.stack);
-            return callback(err);
+            logger.error('Error in neo4jConnection-getQuestionType: ', err.message);
+            return callback(new Error("Internal server error."));
           }
         });
     } catch(err){
-      logger.error('Error in neo4jConnection-getQuestionType: ', err.stack);
-      return callback(err);
+      logger.error('Error in neo4jConnection-getQuestionType: ', err.message);
+      return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Ha egy adott felhasználó admin akkor true, különben false
+  */
   isAdmin: function(user, callback){
     try{
       var session = driver.session();
@@ -324,13 +367,17 @@ var self = module.exports = {
         .catch(function(err){
           logger.error('Error in neo4jConnection-isAdmin: ', err.message);
           session.close();
-          return callback(err);
+          return callback(new Error("Internal server error."));
         });
     } catch(err){
       logger.error('Error in neo4jConnection-isAdmin: ', err.message);
-      return callback(err);
+      return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Új típus létrehozása
+    Ha sikeres a létrehozás, akkor true, különben false
+  */
   newType: function(type, callback){
     try{
       var session = driver.session();
@@ -345,22 +392,26 @@ var self = module.exports = {
           session.close();
           if(result.records.length==0){
             return callback(null, false);
+            logger.info("Something wrong: %s!-newType", type);
           }
           else{
             return callback(null, true);
-            logger.info("New type: %s!", type);
+            logger.info("New type: %s!-newType", type);
           }
         })
         .catch(function(err){
           logger.error('Error in neo4jConnection-newType: ', err.message);
           session.close();
-          return callback(err);
+          return callback(new Error("Internal server error."));
         });
     } catch(err){
       logger.error('Error in neo4jConnection-newType: ', err.message);
-      return callback(err);
+      return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Új kérdés és válasz csomópontok létrehozása és a kapcsolatokkal való összekötés
+  */
   newQuestion: function(question, callback){
     try{
       var session = driver.session();
@@ -387,7 +438,7 @@ var self = module.exports = {
         .then(function(result){
           session.close();
           return callback(null, true);
-          logger.info("New question: %s!", type);
+          logger.info("New question: %s!-newQuestion", type);
         })
         .catch(function(err){
           logger.error('Error in neo4jConnection-newQuestion: ', err.message);
@@ -399,6 +450,10 @@ var self = module.exports = {
       return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Válasz ellenörzése ID alapján
+    Ha helyes, akkor true, különben false
+  */
   isCorrect: function(answer, callback){
     try{
       var session = driver.session();
@@ -423,6 +478,9 @@ var self = module.exports = {
       return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Adott típushoz tartozó kérdéseknek az azonosítóinak a meghatározása
+  */
   getQuestionsID: function(type, callback){
     try{
       var session = driver.session();
@@ -447,6 +505,10 @@ var self = module.exports = {
       return callback(new Error("Internal server error."));
     }
   }, 
+  /*
+    Kérdés ID alapján a kérdés objektum felépítése és visszatérítése
+    Ha létezik, akkor visszatéríti az objektumot, különben null
+  */
   getQuestion: function(question, callback){
     try{
       var session = driver.session();
@@ -488,13 +550,17 @@ var self = module.exports = {
         .catch(function(err){
           logger.error('Error in neo4jConnection-getQuestion: ', err.message);
           session.close();
-          return callback(err);
+          return callback(new Error("Internal server error."));
         });
     } catch(err){
       logger.error('Error in neo4jConnection-getQuestion: ', err.message);
       return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Kérdés objektum visszatérítése egy hozzá tartozó válasz azonosító alapján
+    Ha létezik, akkor visszatéríti a kérés objektumot, különben null
+  */
   getQuestionTypeByAnswer: function(answer, callback){
     try{
       var session = driver.session();
@@ -524,6 +590,9 @@ var self = module.exports = {
       return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Típus módosítása
+  */
   updateType: function(type, callback){
     try{
       var session = driver.session();
@@ -536,18 +605,23 @@ var self = module.exports = {
         })
         .then(function (result) {
           session.close();
+          logger.info('%s type was updated!-updateType', type.getName());
           callback(null, true);
         })
         .catch(function(error){
-          logger.error('Error in neo4jConnection-updateType: ', error.stack);
+          logger.error('Error in neo4jConnection-updateType: ', error.message);
           session.close();
           return callback(new Error("Internal server error."));
         });
     }
     catch(err){
+      logger.error('Error in neo4jConnection-updateType: ', error.message);
       return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Adott típus és a hozzá terozó bejövő élek törlése
+  */
   deleteType: function(type, callback){
     try{
       var session = driver.session();
@@ -568,18 +642,23 @@ var self = module.exports = {
           })
         })
         .then(function (){
+          logger.info('%s type was deleted!-deleteType', type.getName());
           callback(null, true);
         })
-        .catch(function(error){
-          logger.error('Error in neo4jConnection-deleteType: ', error.stack);
+        .catch(function(err){
+          logger.error('Error in neo4jConnection-deleteType: ', err.message);
           session.close();
           return callback(new Error("Internal server error."));
         });
     }
     catch(err){
+      logger.error('Error in neo4jConnection-deleteType: ', err.message);
       return callback(new Error("Internal server error."));
     }
   },
+  /*
+    Adott kérdés azonosítóval rendelkező kérdés, hozzá kapcsolódó válaszok és kapcsolatok törlése
+  */
   deleteQuestion: function(question, callback){
     try{
       var session = driver.session();
@@ -596,21 +675,18 @@ var self = module.exports = {
           })
         })
         .then(function (){
+          logger.info("%d question was deleted!-deleteQuestion", question.getID());
           callback(null, true);
         })
         .catch(function(err){
-          logger.error('Error in neo4jConnection-deleteQuestion: ', err.stack);
+          logger.error('Error in neo4jConnection-deleteQuestion: ', err.message);
           session.close();
           return callback(new Error("Internal server error."));
         });
     }
     catch(err){
-      logger.error('Error in neo4jConnection-deleteQuestion: ', err.stack);
+      logger.error('Error in neo4jConnection-deleteQuestion: ', err.message);
       return callback(new Error("Internal server error."));
     }
   }
 };
-/*
-Match(q:Question{question:'ques'})<-[t:answer]-(a:Answer)
-delete t,a,q
-*/

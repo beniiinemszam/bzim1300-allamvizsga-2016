@@ -3,13 +3,13 @@ var compression 	= require('compression');
 var path    		= require("path");
 var url 			= require("url");
 var async 			= require("async");
-var winston			= require("winston");
 var bodyParser 		= require('body-parser');
 var session 		= require('express-session');
 var vash 			= require('vash');
 // var engine 			= require('express-dot-engine');
 var neo4j			= require(path.join(__dirname + "/services/neo4jConnection"));
 var encoding		= require(path.join(__dirname + "/services/encoding"));
+var Logger			= require(path.join(__dirname + "/services/logger"));
 var Question		= require(path.join(__dirname + "/models/Question"));
 var QuestionType	= require(path.join(__dirname + "/models/QuestionType"));
 var Answer        	= require(path.join(__dirname + "/models/Answer"));
@@ -44,17 +44,10 @@ app.use(session({
   })
 });*/
 
-var logger = new(winston.Logger)({
-    transports: [
-        new(winston.transports.Console)({
-        	level: 'debug'
-        }),
-        new(winston.transports.File)({
-        	filename	: __dirname + '/logs/logs.log',
-        	level		: 'info',		
-        	json		: true
-        })
-    ]
+var logger;
+
+Logger.getLogger(function(loggerobj){
+	logger = loggerobj;
 });
 
 function checkAuth(req, res, next){
@@ -255,7 +248,7 @@ app.post("/login", function(req, res){
 
 	UserDao.getUser(user, function(err, success){
 		if(err){
-			return renderError(res, err.getPath(), err.getErrorMessage(), err.getCode());
+			return renderError(res, 'login', err.getErrorMessage(), err.getCode());
 		}
 		sessionNewPage(req, '/login', username);
 		redirect(res,'/types');
@@ -499,13 +492,11 @@ app.post("/quiz/:type", checkAuth, function(req, res){
 	}
 
 	var answer = new Answer(null, null, parseInt(ansID));
-	logger.debug(ansID);
 	QuestionDao.getNextQuestion(answer, befques, qn, function(err, array, data, correct){
 		if(err){
 			return renderError(res, err.getPath(), err.getErrorMessage(), err.getCode());
 		}
 		if(correct){
-			logger.debug("correct");
 			sess.userpoint = point + 1;
 		}
 		qn 				= qn + 1;
@@ -545,8 +536,7 @@ app.post("/admin", function(req, res){
 	pass 		= req.body.password;
 
 	if(username == null || pass == null){
-		renderError(res, 'error', 'All parameter is required!', 403);
-		return;
+		return renderError(res, 'error', 'All parameter is required!', 403);
 	}
 
 	var user = new User(username, pass, null, true, null);
@@ -555,7 +545,7 @@ app.post("/admin", function(req, res){
 		function(callback){
 			UserDao.getUser(user, function(err, success){
 				if(err){
-					return renderError(res, err.getPath(), err.getErrorMessage(), err.getCode());
+					return callback(err);
 				}
 				callback(null, success);
 			});
@@ -584,8 +574,8 @@ app.post("/admin", function(req, res){
 				return renderError(res, err.getPath(), err.getErrorMessage(), err.getCode());
 			}
 		}
-	], function(err){
-		return renderError(res, err.getPath(), err.getErrorMessage(), err.getCode());
+	], function(err, result){
+		return renderError(res, 'adminLogin', err.getErrorMessage(), err.getCode());
 	});
 });
 
