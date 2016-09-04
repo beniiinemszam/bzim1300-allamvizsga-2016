@@ -190,7 +190,7 @@ var self = module.exports = {
 			}
 		],function(err, array, data, befques, qtn){
 			if(err){
-				return callback(new CustomError(err.message, 500, 'error'));
+				return callback(err);
 			}
 			callback(null, array, data, befques, qtn);
 		});

@@ -213,7 +213,7 @@ var self = module.exports = {
         })
         .then(function (records) {
           for(i = 0; i < records.length; i ++){
-            if(records[i].get("count")>=records[i].get("number")){
+            if(parseInt(records[i].get("count"))>=parseInt(records[i].get("number"))){
               array.push(records[i].get("name"));
             }
           }

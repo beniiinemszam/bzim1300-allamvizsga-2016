@@ -67,15 +67,15 @@ function newQuestion(id){
       if (xhttp.readyState == 4 && xhttp.status == 200){
         var myArr = JSON.parse(xhttp.responseText);
 
-        var cn = parseInt(myArr.qn) + 1
+        var cn = parseInt(myArr.qn) + 1;
 
         document.getElementById('question-number').innerText  = 'question: ' + myArr.qtn + ' / ' + cn;
         document.getElementById('question-correct').innerText = 'correct: ' + myArr.cn;
         document.getElementById('question').innerText = myArr.question;
-        document.getElementById('bt1').innerText      = myArr.ans1;
-        document.getElementById('bt2').innerText      = myArr.ans2;
-        document.getElementById('bt3').innerText      = myArr.ans3;
-        document.getElementById('bt4').innerText      = myArr.ans4;
+        document.getElementById('bt1').innerHTML      = "<span>" + myArr.ans1 + "</span>" 
+        document.getElementById('bt2').innerHTML      = "<span>" + myArr.ans2 + "</span>" 
+        document.getElementById('bt3').innerHTML      = "<span>" + myArr.ans3 + "</span>" 
+        document.getElementById('bt4').innerHTML      = "<span>" + myArr.ans4 + "</span>" 
         document.getElementById('bt1').value = myArr.aid1;
         document.getElementById('bt2').value = myArr.aid2;
         document.getElementById('bt3').value = myArr.aid3;

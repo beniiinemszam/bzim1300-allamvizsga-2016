@@ -423,7 +423,7 @@ app.get("/description/:type", checkAuth, function(req, res){
 
 	TypeDao.getType(type, function(err, data){
 		if(err){
-			return renderError(res, err.getPath(), err.getErrorMessage(), err.getCode());
+			return renderError(res, 'error', err.getErrorMessage(), err.getCode());
 		}
 		res.render('description', 
 		{
